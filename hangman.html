@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هانج مان المخطوط – MaktabaPlay</title>
+    <!-- الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- ملف التنسيق الموحد (نفس الثيم الغامق) -->
+    <style>
+        :root {
+            --bg: #0b0f17;
+            --card-bg: #111827;
+            --muted: #6b7280;
+            --text: #e5e7eb;
+            --brand: #22c55e;
+            --brand-2: #06b6d4;
+            --border: #1f2937;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --accent: #a78bfa;
+
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(180deg, #0b0f17, #0f172a);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(8px);
+            background: rgba(11, 15, 23, 0.6);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 20px;
+            color: white;
+        }
+
+        .brand-badge {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #041014;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--brand-2);
+        }
+
+        footer {
+            background: linear-gradient(90deg, #0e1626, #0b1220);
+            border-top: 1px solid var(--border);
+            padding: 20px 0;
+            margin-top: auto;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .footer-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        footer a {
+            color: var(--brand-2);
+            text-decoration: none;
+        }
+
+        /* ===== تنسيقات لعبة هانج مان ===== */
+        .hangman-container {
+            max-width: 1300px;
+            margin: 20px auto;
+            padding: 20px;
+            width: 100%;
+            flex: 1;
+        }
+
+        .hangman-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+        }
+
+        .hangman-sidebar {
+            background: linear-gradient(180deg, #0e1626, #0b1220);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 20px;
+            height: fit-content;
+        }
+
+        .hangman-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hangman-logo-icon {
+            font-size: 40px;
+        }
+
+        .hangman-logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .hangman-nav {
+            list-style: none;
+        }
+
+        .hangman-nav-item {
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid transparent;
+            border-radius: 16px;
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hangman-nav-item:hover {
+            background: rgba(6, 182, 212, 0.05);
+            border-color: var(--brand-2);
+        }
+
+        .hangman-nav-item.active {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--brand-2);
+            color: #a5f3fc;
+        }
+
+        .hangman-main {
+            background: linear-gradient(180deg, #0e1626, #0b1220);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 25px;
+        }
+
+        .hangman-section {
+            display: none;
+        }
+
+        .hangman-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hangman-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .hangman-stat-card {
+            background: #0b1220;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hangman-stat-label {
+            color: var(--muted);
+            font-size: 13px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .hangman-stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--brand-2);
+            line-height: 1.2;
+        }
+
+        .hangman-pixel-art {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            line-height: 1.3;
+            color: var(--brand-2);
+            text-align: center;
+            background: #0b1220;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            white-space: pre;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            direction: ltr;
+        }
+
+        .hangman-word-display {
+            font-size: 48px;
+            font-weight: bold;
+            letter-spacing: 15px;
+            text-align: center;
+            background: #0b1220;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 20px;
+        }
+
+        .hangman-letters-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .hangman-letter-btn {
+            padding: 14px;
+            background: #0f1a2f;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1.2rem;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .hangman-letter-btn:hover:not(:disabled) {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--brand-2);
+            transform: translateY(-2px);
+        }
+
+        .hangman-letter-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .hangman-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .hangman-table th {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid var(--border);
+            padding: 12px;
+            color: #a5f3fc;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .hangman-table td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            color: var(--text);
+            text-align: right;
+        }
+
+        .hangman-form-group {
+            margin-bottom: 20px;
+        }
+
+        .hangman-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .hangman-form-group input,
+        .hangman-form-group textarea,
+        .hangman-form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0b1220;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .hangman-form-group input:focus,
+        .hangman-form-group textarea:focus,
+        .hangman-form-group select:focus {
+            outline: none;
+            border-color: var(--brand-2);
+        }
+
+        .hangman-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .hangman-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            color: #041014;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hangman-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(6, 182, 212, 0.3);
+        }
+
+        .hangman-btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .hangman-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .hangman-btn-danger {
+            background: linear-gradient(135deg, var(--danger), #b91c1c);
+            color: white;
+        }
+
+        .hangman-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .hangman-modal.show {
+            display: flex;
+        }
+
+        .hangman-modal-content {
+            background: #0e1626;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .difficulty.easy {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .difficulty.medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .difficulty.hard {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .content-section {
+            background: #0b1220;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .content-section h3 {
+            color: var(--brand-2);
+            margin-bottom: 12px;
+        }
+
+        .content-section p {
+            color: var(--muted);
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .hangman-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hangman-letters-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .hangman-word-display {
+                font-size: 32px;
+                letter-spacing: 8px;
+            }
+
+            .hangman-form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- شريط التنقل الموحد -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <div class="brand-badge">مـ</div>
+                <span>MaktabaPlay</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">الرئيسية</a>
+                <a href="hangman.html" class="active">هانج مان المخطوط</a>
+                <a href="ladder-classification.html">السلم والتصنيف</a>
+                <a href="book-detective.html">محقق الكتب</a>
+                <a href="about.html">من نحن</a>
+                <a href="contact.html">تواصل</a>
+                <a href="partners.html">شركاء</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hangman-container">
+        <div class="hangman-grid">
+            <!-- الشريط الجانبي -->
+            <div class="hangman-sidebar">
+                <div class="hangman-logo">
+                    <span class="hangman-logo-icon">📚</span>
+                    <span class="hangman-logo-text">المخطوطات</span>
+                </div>
+                <ul class="hangman-nav">
+                    <li class="hangman-nav-item active" data-page="dashboard"><span>📊</span> لوحة التحكم</li>
+                    <li class="hangman-nav-item" data-page="game"><span>🎮</span> لعبة التخمين</li>
+                    <li class="hangman-nav-item" data-page="questions"><span>❓</span> بنك الأسئلة</li>
+                    <li class="hangman-nav-item" data-page="addquestion"><span>➕</span> إضافة سؤال</li>
+                    <li class="hangman-nav-item" data-page="results"><span>📈</span> النتائج</li>
+                    <li class="hangman-nav-item" data-page="content"><span>📖</span> محتوى المادة</li>
+                </ul>
+            </div>
+
+            <!-- المحتوى الرئيسي -->
+            <div class="hangman-main">
+                <!-- لوحة التحكم -->
+                <div id="dashboard" class="hangman-section active">
+                    <h2 style="color: white; margin-bottom: 20px;">📊 لوحة التحكم</h2>
+                    <div class="hangman-stats-grid">
+                        <div class="hangman-stat-card">
+                            <div class="hangman-stat-label">إجمالي الأسئلة</div>
+                            <div class="hangman-stat-value" id="totalQuestions">0</div>
+                        </div>
+                        <div class="hangman-stat-card">
+                            <div class="hangman-stat-label">جولات لعبت</div>
+                            <div class="hangman-stat-value" id="gamesPlayed">0</div>
+                        </div>
+                        <div class="hangman-stat-card">
+                            <div class="hangman-stat-label">جولات رابحة</div>
+                            <div class="hangman-stat-value" id="gamesWon">0</div>
+                        </div>
+                        <div class="hangman-stat-card">
+                            <div class="hangman-stat-label">نسبة النجاح</div>
+                            <div class="hangman-stat-value" id="winRate">0%</div>
+                        </div>
+                    </div>
+                    <div class="content-section">
+                        <h3>📖 محتوى المادة</h3>
+                        <p>مادة المخطوطات العربية تشمل المفاهيم الأساسية والتطور التاريخي والأدوات والمواد والتأليف
+                            والنسخ والرواية وتحقيق المخطوطات والفهرسة.</p>
+                        <button class="hangman-btn" data-page="content" style="margin-top: 15px;">عرض المحتوى</button>
+                    </div>
+                </div>
+
+                <!-- صفحة اللعبة -->
+                <div id="game" class="hangman-section">
+                    <h2 style="color: white; margin-bottom: 20px;">🎮 لعبة تخمين المخطوط</h2>
+                    <div class="hangman-pixel-art" id="drawing"></div>
+                    <div class="hangman-word-display" id="word">_ _ _</div>
+                    <div class="content-section" style="margin-bottom: 15px;">
+                        <strong style="color: var(--brand-2);">الفئة:</strong> <span id="gameCategory"
+                            style="color: white;"></span>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <div class="hangman-stat-card" style="flex:1;">
+                            <div class="hangman-stat-label">محاولات متبقية</div>
+                            <div class="hangman-stat-value" id="remaining">6</div>
+                        </div>
+                        <div class="hangman-stat-card" style="flex:1;">
+                            <div class="hangman-stat-label">الأخطاء</div>
+                            <div class="hangman-stat-value" id="wrong">0</div>
+                        </div>
+                    </div>
+                    <div class="hangman-letters-grid" id="letters"></div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                        <button class="hangman-btn" id="hintBtn">💡 تلميح</button>
+                        <button class="hangman-btn hangman-btn-secondary" id="resetGameBtn">🔄 لعبة جديدة</button>
+                    </div>
+                    <div id="gameMessage"
+                        style="margin-top: 20px; font-size: 18px; font-weight: 700; text-align: center;"></div>
+                </div>
+
+                <!-- بنك الأسئلة -->
+                <div id="questions" class="hangman-section">
+                    <h2 style="color: white; margin-bottom: 20px;">❓ بنك الأسئلة</h2>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <button class="hangman-btn" data-page="addquestion">➕ إضافة سؤال</button>
+                        <button class="hangman-btn hangman-btn-secondary" id="exportBtn">📥 تصدير</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="hangman-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>الكلمة</th>
+                                    <th>الفئة</th>
+                                    <th>الصعوبة</th>
+                                    <th>التلميح</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="questionsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- إضافة سؤال -->
+                <div id="addquestion" class="hangman-section">
+                    <h2 style="color: white; margin-bottom: 20px;">➕ إضافة سؤال جديد</h2>
+                    <form id="addQuestionForm">
+                        <div class="hangman-form-group">
+                            <label>الكلمة *</label>
+                            <input type="text" id="newWord" placeholder="مثال: المخطوط" required>
+                        </div>
+                        <div class="hangman-form-row">
+                            <div class="hangman-form-group">
+                                <label>الفئة</label>
+                                <select id="newCategory" required>
+                                    <option value="">اختر الفئة</option>
+                                    <option value="تعريفات">تعريفات</option>
+                                    <option value="مواد">مواد</option>
+                                    <option value="أدوات">أدوات</option>
+                                    <option value="التطور">التطور التاريخي</option>
+                                    <option value="التأليف">التأليف والنسخ</option>
+                                    <option value="أخطاء">أخطاء النقل</option>
+                                    <option value="التحقيق">تحقيق المخطوطات</option>
+                                    <option value="أجزاء">أجزاء المخطوط</option>
+                                    <option value="الفهرسة">الفهرسة</option>
+                                    <option value="الرواية">الرواية</option>
+                                    <option value="الحرفة">الحرفة</option>
+                                    <option value="الأشخاص">الأشخاص</option>
+                                </select>
+                            </div>
+                            <div class="hangman-form-group">
+                                <label>الصعوبة</label>
+                                <select id="newDifficulty" required>
+                                    <option value="">اختر الصعوبة</option>
+                                    <option value="easy">سهل</option>
+                                    <option value="medium">متوسط</option>
+                                    <option value="hard">صعب</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="hangman-form-group">
+                            <label>التلميح *</label>
+                            <textarea id="newHint" rows="3" placeholder="تلميح مساعد للكلمة" required></textarea>
+                        </div>
+                        <button type="submit" class="hangman-btn">✅ إضافة السؤال</button>
+                    </form>
+                </div>
+
+                <!-- النتائج -->
+                <div id="results" class="hangman-section">
+                    <h2 style="color: white; margin-bottom: 20px;">📈 النتائج والإحصائيات</h2>
+                    <div class="hangman-stats-grid">
+                        <div class="hangman-stat-card">
+                            <div class="hangman-stat-label">إجمالي الجولات</div>
+                            <div class="hangman-stat-value" id="statsTotal">0</div>
+                        </div>
+                        <div class="hangman-stat-card">
+                            <div class="hangman-stat-label">الجولات الرابحة</div>
+                            <div class="hangman-stat-value" id="statsWon">0</div>
+                        </div>
+                        <div class="hangman-stat-card">
+                            <div class="hangman-stat-label">الجولات الخاسرة</div>
+                            <div class="hangman-stat-value" id="statsLost">0</div>
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="hangman-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>الكلمة</th>
+                                    <th>النتيجة</th>
+                                    <th>الأخطاء</th>
+                                    <th>الوقت</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTable"></tbody>
+                        </table>
+                    </div>
+                    <button class="hangman-btn hangman-btn-danger" id="clearHistoryBtn" style="margin-top: 20px;">🗑️
+                        مسح السجل</button>
+                </div>
+
+                <!-- محتوى المادة -->
+                <div id="content" class="hangman-section">
+                    <h2 style="color: white; margin-bottom: 20px;">📖 محتوى مادة المخطوطات</h2>
+                    <div id="contentContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-inner">
+            <div>© 2026 MaktabaPlay – منصة ألعاب مكتبية عربية</div>
+            <div><a href="contact.html">اتصل بنا</a> · <a href="partners.html">شراكات</a></div>
+        </div>
+    </footer>
+
+    <!-- مودال التأكيد -->
+    <div id="confirmModal" class="hangman-modal">
+        <div class="hangman-modal-content">
+            <h3 style="color: white;" id="confirmTitle">تأكيد</h3>
+            <p style="color: var(--muted); margin: 15px 0;" id="confirmMessage"></p>
+            <div style="display: flex; gap: 10px;">
+                <button class="hangman-btn" id="confirmBtn">تأكيد</button>
+                <button class="hangman-btn hangman-btn-secondary" onclick="closeModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            "use strict";
+
+            // ========== البيانات الأولية ==========
+            let data = {
+                questions: [
+                    { word: 'المخطوط', category: 'تعريفات', difficulty: 'easy', hint: 'كتاب مكتوب باليد قبل الطباعة' },
+                    { word: 'الورق', category: 'مواد', difficulty: 'easy', hint: 'وعاء يُكتب عليه - الكاغد' },
+                    { word: 'التجليد', category: 'أدوات', difficulty: 'medium', hint: 'ربط أوراق المخطوط معاً' },
+                    { word: 'الناسخ', category: 'الأشخاص', difficulty: 'easy', hint: 'من ينقل المخطوط بخط اليد' },
+                    { word: 'الحبر', category: 'مواد', difficulty: 'easy', hint: 'سائل يُستخدم للكتابة' },
+                    { word: 'البردي', category: 'مواد', difficulty: 'medium', hint: 'وعاء قديم على شكل لفائف' },
+                    { word: 'الرق', category: 'مواد', difficulty: 'medium', hint: 'جلد حيوان يُستخدم للكتابة' },
+                    { word: 'التصحيف', category: 'أخطاء', difficulty: 'hard', hint: 'خطأ في نقط الحروف' },
+                    { word: 'التحريف', category: 'أخطاء', difficulty: 'hard', hint: 'خطأ في بنية الكلمة' },
+                    { word: 'الحاشية', category: 'أجزاء', difficulty: 'medium', hint: 'تعليق على جانب الصفحة' },
+                    { word: 'الكولوفون', category: 'أجزاء', difficulty: 'hard', hint: 'معلومات في نهاية المخطوط' },
+                    { word: 'الوراقة', category: 'الحرفة', difficulty: 'hard', hint: 'حرفة النسخ والتصحيح والتجليد' },
+                    { word: 'الفهرسة', category: 'الفهرسة', difficulty: 'hard', hint: 'وصف بيانات المخطوط الببليوغرافية' },
+                    { word: 'الانتحال', category: 'أخطاء', difficulty: 'hard', hint: 'نسبة الكتاب لغير صاحبه' },
+                    { word: 'السماع', category: 'الرواية', difficulty: 'medium', hint: 'سماع المتن من المؤلف' },
+                    { word: 'المسودة', category: 'التأليف', difficulty: 'easy', hint: 'النسخة الأولية للكتاب' },
+                    { word: 'المبيضة', category: 'التأليف', difficulty: 'medium', hint: 'النسخة النهائية والمنقحة' },
+                    { word: 'الإعجام', category: 'التطور', difficulty: 'hard', hint: 'نقط الحروف العربية المتشابهة' },
+                    { word: 'الإعراب', category: 'التطور', difficulty: 'hard', hint: 'علامات الشكل على الكلمات' },
+                    { word: 'العفص', category: 'مواد', difficulty: 'hard', hint: 'مادة تدخل في صناعة الحبر' }
+                ],
+                gameHistory: [],
+                stats: { gamesPlayed: 0, gamesWon: 0 }
+            };
+
+            // مراحل الرسم (pixel art)
+            const pixelStages = [
+                '█████████████████\n█░░░░░░░░░░░░░░░█\n█░ مكتبة سليمة  ░█\n█░░░░░░░░░░░░░░░█\n█████████████████',
+                '█████████████████\n█░░░░░░░░░░░░░░░█\n█░  ⚠️ تحذير    ░█\n█░░░░░░░░░░░░░░░█\n█████████████████\n        |',
+                '█████████████████\n█░░░░░░░░░░░░░░░█\n█░ ⚠️ ⚠️ تحذير   ░█\n█░░░░░░░░░░░░░░░█\n█████████████████\n        |\n        O',
+                '█████████████████\n█░░░░░░░░░░░░░░░█\n█░  ⚠️ ⚠️ خطر!   ░█\n█░░░░░░░░░░░░░░░█\n█████████████████\n        |\n        O\n        |',
+                '█████████████████\n█░░░░░░░░░░░░░░░█\n█░ خطر! 🔥 🔥    ░█\n█░░░░░░░░░░░░░░░█\n█████████████████\n        |\n        O\n       /|',
+                '█████████████████\n█░░░░░░░░░░░░░░░█\n█░خطر! 🔥 🔥 🔥  ░█\n█░░░░░░░░░░░░░░░█\n█████████████████\n        |\n        O\n       /|\\',
+                '█████████████████\n█░░░░░░░░░░░░░░░█\n█░ الأرشيف 💀💀  ░█\n█░░░░░░░░░░░░░░░█\n█████████████████\n        |\n        O\n       /|\\\n       / \\'
+            ];
+
+            const arabicLetters = 'أابتثجحخدذرزسشصضطظعغفقكلمنهوي'.split('');
+
+            const contentData = `
+                <div class="content-section">
+                    <h3>أولاً: مفاهيم أساسية وعلم المخطوطات</h3>
+                    <p><strong>تعريف المخطوط العربي:</strong> هو كل كتاب أُلِّف باللغة العربية، سواء كان مؤلفه عربياً أم أعجمياً، وسواء نُشر داخل شبه الجزيرة العربية أم خارجها، وكُتب بخط اليد قبل ظهور الطباعة.</p>
+                    <p><strong>علم المخطوطات (Codicology):</strong> هو العلم الذي يدرس المخطوط كوعاء مادي وتاريخي وفني (دراسة الورق، الحبر، التجليد، والزخرفة)، ولا يتناول المتن أو النص بالدراسة.</p>
+                </div>
+                <div class="content-section">
+                    <h3>ثانياً: التطور التاريخي للكتابة والتدوين</h3>
+                    <p><strong>العصر الجاهلي وصدر الإسلام:</strong> عرف العرب الكتابة واستخدموا مواد أولية مثل اللخاف (حجارة)، العسيب والكرانيف (نخل)، وعظام الحيوانات.</p>
+                    <p><strong>جمع القرآن الكريم:</strong> بدأت مراحل التدوين الكبرى بجمع القرآن في عهد عمر بن الخطاب وزيد بن ثابت.</p>
+                </div>
+            `;
+
+            // ========== عناصر DOM ==========
+            const sections = document.querySelectorAll('.hangman-section');
+            const navItems = document.querySelectorAll('.hangman-nav-item');
+            const dashboardTotalQuestions = document.getElementById('totalQuestions');
+            const dashboardGamesPlayed = document.getElementById('gamesPlayed');
+            const dashboardGamesWon = document.getElementById('gamesWon');
+            const dashboardWinRate = document.getElementById('winRate');
+            const questionsTable = document.getElementById('questionsTable');
+            const historyTable = document.getElementById('historyTable');
+            const statsTotal = document.getElementById('statsTotal');
+            const statsWon = document.getElementById('statsWon');
+            const statsLost = document.getElementById('statsLost');
+            const contentContainer = document.getElementById('contentContainer');
+            const confirmModal = document.getElementById('confirmModal');
+            const confirmTitle = document.getElementById('confirmTitle');
+            const confirmMessage = document.getElementById('confirmMessage');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const addQuestionForm = document.getElementById('addQuestionForm');
+            const newWord = document.getElementById('newWord');
+            const newCategory = document.getElementById('newCategory');
+            const newDifficulty = document.getElementById('newDifficulty');
+            const newHint = document.getElementById('newHint');
+            const exportBtn = document.getElementById('exportBtn');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+            const hintBtn = document.getElementById('hintBtn');
+            const resetGameBtn = document.getElementById('resetGameBtn');
+
+            // عناصر اللعبة
+            const drawingEl = document.getElementById('drawing');
+            const wordEl = document.getElementById('word');
+            const gameCategoryEl = document.getElementById('gameCategory');
+            const remainingEl = document.getElementById('remaining');
+            const wrongEl = document.getElementById('wrong');
+            const lettersContainer = document.getElementById('letters');
+            const gameMessageEl = document.getElementById('gameMessage');
+
+            // ========== دوال مساعدة ==========
+            function showPage(pageId) {
+                sections.forEach(s => s.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+                navItems.forEach(item => item.classList.remove('active'));
+                const activeNav = Array.from(navItems).find(item => item.dataset.page === pageId);
+                if (activeNav) activeNav.classList.add('active');
+
+                if (pageId === 'questions') renderQuestionsTable();
+                else if (pageId === 'results') updateStats();
+                else if (pageId === 'content') contentContainer.innerHTML = contentData;
+            }
+
+            function closeModal() {
+                confirmModal.classList.remove('show');
+            }
+
+            function getDifficultyText(diff) {
+                const map = { easy: 'سهل', medium: 'متوسط', hard: 'صعب' };
+                return map[diff] || '-';
+            }
+
+            function renderQuestionsTable() {
+                if (!questionsTable) return;
+                if (data.questions.length === 0) {
+                    questionsTable.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--muted);">لا توجد أسئلة</td></tr>';
+                    return;
+                }
+                questionsTable.innerHTML = data.questions.map((q, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td><strong style="color:white;">${q.word}</strong></td>
+                        <td><span class="difficulty-badge" style="background:rgba(6,182,212,0.1); color:var(--brand-2);">${q.category}</span></td>
+                        <td><span class="difficulty ${q.difficulty}">${getDifficultyText(q.difficulty)}</span></td>
+                        <td>${q.hint}</td>
+                        <td><button class="hangman-btn hangman-btn-secondary" style="padding:6px 12px;" data-index="${i}">🗑️</button></td>
+                    </tr>
+                `).join('');
+
+                // إضافة event listeners لأزرار الحذف
+                document.querySelectorAll('#questionsTable button[data-index]').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const index = parseInt(this.dataset.index);
+                        deleteQuestion(index);
+                    });
+                });
+            }
+
+            function deleteQuestion(index) {
+                confirmTitle.textContent = 'تأكيد الحذف';
+                confirmMessage.textContent = `هل أنت متأكد من حذف "${data.questions[index].word}"؟`;
+                confirmBtn.onclick = () => {
+                    data.questions.splice(index, 1);
+                    closeModal();
+                    renderQuestionsTable();
+                    updateDashboard();
+                };
+                confirmModal.classList.add('show');
+            }
+
+            function addQuestion(event) {
+                event.preventDefault();
+                const word = newWord.value.trim();
+                const category = newCategory.value;
+                const difficulty = newDifficulty.value;
+                const hint = newHint.value.trim();
+                if (!word || !category || !difficulty || !hint) {
+                    alert('⚠️ الرجاء ملء جميع الحقول');
+                    return;
+                }
+                data.questions.push({ word, category, difficulty, hint });
+                newWord.value = '';
+                newCategory.value = '';
+                newDifficulty.value = '';
+                newHint.value = '';
+                alert('✅ تمت إضافة السؤال بنجاح');
+                updateDashboard();
+            }
+
+            function exportQuestions() {
+                if (data.questions.length === 0) {
+                    alert('لا توجد أسئلة للتصدير');
+                    return;
+                }
+                const csv = 'الكلمة,الفئة,الصعوبة,التلميح\n' +
+                    data.questions.map(q => `"${q.word}","${q.category}","${getDifficultyText(q.difficulty)}","${q.hint}"`).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'questions.csv';
+                link.click();
+            }
+
+            function updateDashboard() {
+                if (dashboardTotalQuestions) dashboardTotalQuestions.textContent = data.questions.length;
+                if (dashboardGamesPlayed) dashboardGamesPlayed.textContent = data.stats.gamesPlayed;
+                if (dashboardGamesWon) dashboardGamesWon.textContent = data.stats.gamesWon;
+                const rate = data.stats.gamesPlayed ? Math.round((data.stats.gamesWon / data.stats.gamesPlayed) * 100) : 0;
+                if (dashboardWinRate) dashboardWinRate.textContent = rate + '%';
+            }
+
+            function updateStats() {
+                if (statsTotal) statsTotal.textContent = data.stats.gamesPlayed;
+                if (statsWon) statsWon.textContent = data.stats.gamesWon;
+                if (statsLost) statsLost.textContent = data.stats.gamesPlayed - data.stats.gamesWon;
+
+                if (historyTable) {
+                    if (data.gameHistory.length === 0) {
+                        historyTable.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--muted);">لا توجد جولات بعد</td></tr>';
+                    } else {
+                        historyTable.innerHTML = data.gameHistory.slice().reverse().map((h, i) => `
+                            <tr>
+                                <td>${i + 1}</td>
+                                <td>${h.word}</td>
+                                <td>${h.won ? '✅' : '❌'}</td>
+                                <td>${h.errors}</td>
+                                <td>${h.time}</td>
+                            </tr>
+                        `).join('');
+                    }
+                }
+            }
+
+            function clearHistory() {
+                if (confirm('هل تريد مسح جميع السجلات؟')) {
+                    data.gameHistory = [];
+                    data.stats = { gamesPlayed: 0, gamesWon: 0 };
+                    updateStats();
+                    updateDashboard();
+                }
+            }
+
+            // ========== كائن اللعبة ==========
+            class HangmanGame {
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    if (data.questions.length === 0) {
+                        alert('⚠️ لا توجد أسئلة! أضف أسئلة أولاً.');
+                        return;
+                    }
+                    this.currentQuestion = data.questions[Math.floor(Math.random() * data.questions.length)];
+                    this.word = this.currentQuestion.word;
+                    this.guessedLetters = new Set();
+                    this.wrongGuesses = new Set();
+                    this.gameOver = false;
+                    this.won = false;
+                    this.startTime = Date.now();
+                    this.render();
+                }
+
+                guess(letter) {
+                    if (this.gameOver || this.guessedLetters.has(letter)) return;
+                    this.guessedLetters.add(letter);
+                    if (!this.word.includes(letter)) this.wrongGuesses.add(letter);
+                    this.checkGameState();
+                    this.render();
+                }
+
+                checkGameState() {
+                    const isWon = this.word.split('').every(l => this.guessedLetters.has(l));
+                    const isLost = this.wrongGuesses.size >= 6;
+                    if (isWon || isLost) {
+                        this.gameOver = true;
+                        this.won = isWon;
+                        this.recordGame();
+                    }
+                }
+
+                recordGame() {
+                    data.gameHistory.push({
+                        word: this.word,
+                        won: this.won,
+                        errors: this.wrongGuesses.size,
+                        time: new Date().toLocaleTimeString('ar-EG')
+                    });
+                    data.stats.gamesPlayed++;
+                    if (this.won) data.stats.gamesWon++;
+                    updateDashboard();
+                }
+
+                hint() {
+                    alert(`💡 تلميح: ${this.currentQuestion.hint}`);
+                }
+
+                render() {
+                    if (!drawingEl || !wordEl || !gameCategoryEl || !remainingEl || !wrongEl || !lettersContainer) return;
+
+                    const stage = Math.min(this.wrongGuesses.size, pixelStages.length - 1);
+                    drawingEl.textContent = pixelStages[stage];
+
+                    const display = this.word.split('').map(l => this.guessedLetters.has(l) ? l : '_').join(' ');
+                    wordEl.textContent = display;
+
+                    gameCategoryEl.textContent = this.currentQuestion.category;
+                    remainingEl.textContent = 6 - this.wrongGuesses.size;
+                    wrongEl.textContent = this.wrongGuesses.size;
+
+                    if (this.gameOver) {
+                        gameMessageEl.innerHTML = this.won ? '✅ نجحت! لقد وجدت المخطوط!' : `❌ خسرت! الكلمة الصحيحة: <strong style="color:var(--warning);">${this.word}</strong>`;
+                        gameMessageEl.style.color = this.won ? 'var(--success)' : 'var(--danger)';
+                    } else {
+                        gameMessageEl.textContent = '';
+                    }
+
+                    this.renderLetters();
+                }
+
+                renderLetters() {
+                    lettersContainer.innerHTML = '';
+                    arabicLetters.forEach(letter => {
+                        const btn = document.createElement('button');
+                        btn.textContent = letter;
+                        btn.className = 'hangman-letter-btn';
+                        btn.disabled = this.guessedLetters.has(letter) || this.wrongGuesses.has(letter) || this.gameOver;
+                        btn.addEventListener('click', () => this.guess(letter));
+                        lettersContainer.appendChild(btn);
+                    });
+                }
+            }
+
+            // إنشاء كائن اللعبة
+            const game = new HangmanGame();
+
+            // ========== ربط الأحداث ==========
+            // التنقل بين الصفحات
+            navItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    const page = this.dataset.page;
+                    if (page) showPage(page);
+                });
+            });
+
+            // أزرار التنقل الإضافية (مثل "عرض المحتوى")
+            document.querySelectorAll('button[data-page]').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const page = this.dataset.page;
+                    if (page) showPage(page);
+                });
+            });
+
+            // نموذج إضافة سؤال
+            if (addQuestionForm) {
+                addQuestionForm.addEventListener('submit', addQuestion);
+            }
+
+            // زر التصدير
+            if (exportBtn) {
+                exportBtn.addEventListener('click', exportQuestions);
+            }
+
+            // زر مسح السجل
+            if (clearHistoryBtn) {
+                clearHistoryBtn.addEventListener('click', clearHistory);
+            }
+
+            // أزرار اللعبة
+            if (hintBtn) {
+                hintBtn.addEventListener('click', () => game.hint());
+            }
+            if (resetGameBtn) {
+                resetGameBtn.addEventListener('click', () => game.reset());
+            }
+
+            // إغلاق المودال
+            window.closeModal = closeModal;
+
+            // تهيئة المحتوى
+            updateDashboard();
+            if (contentContainer) contentContainer.innerHTML = contentData;
+            renderQuestionsTable();
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaktabaPlay – العب وتعلم مع المكتبات</title>
+    <!-- الرابط لخط Tajawal (كما في التصميم الموحد) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- ملف التنسيق الموحد -->
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        /* تحسينات إضافية لصفحة الفهرس */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .game-card {
+            background: linear-gradient(145deg, #0f1a2f, #0b1220);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.4);
+            border-color: var(--brand-2);
+        }
+
+        .game-icon {
+            font-size: 48px;
+            background: rgba(6, 182, 212, 0.1);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .game-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .game-desc {
+            color: #a0b3d9;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .game-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .badge {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            color: #0a0f1a;
+            padding: 10px 18px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 14px;
+            transition: filter 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .play-btn:hover {
+            filter: brightness(1.1);
+        }
+
+        .library-quote {
+            background: #0b1220;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0 20px;
+            text-align: center;
+        }
+
+        .quote-text {
+            font-size: 22px;
+            font-weight: 600;
+            color: #e2e8f0;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quote-author {
+            color: var(--brand-2);
+            margin-top: 16px;
+            font-size: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- شريط التنقل الموحد -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <div class="brand-badge">مـ</div>
+                <span>MaktabaPlay</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="active">الرئيسية</a>
+                <a href="hangman.html">هانج مان المخطوط</a>
+                <a href="ladder-classification.html">السلم والتصنيف</a>
+                <a href="book-detective.html">محقق الكتب</a>
+                <a href="about.html">من نحن</a>
+                <a href="contact.html">تواصل</a>
+                <a href="partners.html">شركاء</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <section class="container">
+        <!-- بطاقة تعريفية بالمنصة -->
+        <div class="card" style="text-align: center; padding: 40px 30px;">
+            <div class="kicker">🎮 تعلم – تحدَّ – استكشف</div>
+            <h1 class="h1" style="font-size: 44px; margin: 8px 0;">MaktabaPlay</h1>
+            <p class="lead" style="font-size: 18px; max-width: 700px; margin: 0 auto;">
+                منصة ألعاب تفاعلية تعرّفك بعلم المكتبات والمخطوطات والتصنيف.
+                كل لعبة تمثل جانباً من عالم المكتبات: من حفظ المخطوطات إلى تنظيم المعرفة.
+            </p>
+            <div style="margin-top: 24px;">
+                <span class="badge" style="margin-left: 8px;">🏛️ للمكتبيين</span>
+                <span class="badge" style="margin-left: 8px;">📚 للطلاب</span>
+                <span class="badge">🔍 للمهتمين بالتراث</span>
+            </div>
+        </div>
+
+        <!-- شبكة الألعاب الثلاث -->
+        <div class="game-grid">
+            <!-- لعبة هانج مان للمخطوط العربي -->
+            <div class="game-card">
+                <div class="game-icon">📜</div>
+                <div class="game-title">هانج مان المخطوط</div>
+                <div class="game-desc">
+                    اختبر معرفتك بمصطلحات المخطوطات العربية.
+                    احرف الكلمة قبل أن يتحول الأرشيف إلى رماد!
+                    تناسب طلاب المخطوطات وأمناء المكتبات.
+                </div>
+                <div class="game-meta">
+                    <span class="badge">مفردات تراثية</span>
+                    <a href="hangman.html" class="play-btn">العب الآن ←</a>
+                </div>
+            </div>
+
+            <!-- لعبة السلم والتصنيف (Dewey) -->
+            <div class="game-card">
+                <div class="game-icon">🪜</div>
+                <div class="game-title">السلم والتصنيف</div>
+                <div class="game-desc">
+                    تسلَّق سلم المعرفة عبر الإجابة عن أسئلة تصنيف ديوي.
+                    كل إجابة صحيحة تقدّمك، والثعابين تعيدك للخلف.
+                    مثالي لفهم نظام ديوي العشري.
+                </div>
+                <div class="game-meta">
+                    <span class="badge">تصنيف ديوي</span>
+                    <a href="ladder-classification.html" class="play-btn">العب الآن ←</a>
+                </div>
+            </div>
+
+            <!-- لعبة محقق الكتب (ببليوجرافيا) -->
+            <div class="game-card">
+                <div class="game-icon">🔎</div>
+                <div class="game-title">محقق الكتب</div>
+                <div class="game-desc">
+                    تسجيلات ببليوجرافية بها أخطاء مخفية.
+                    أنت المحقق: اكشف الحقل الخاطئ وصحّحه.
+                    لعبة تنمي الدقة في الفهرسة والتوثيق.
+                </div>
+                <div class="game-meta">
+                    <span class="badge">أخطاء ببليوجرافية</span>
+                    <a href="book-detective.html" class="play-btn">العب الآن ←</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- اقتباس عن المكتبات -->
+        <div class="library-quote">
+            <div class="quote-text">
+                "When in doubt go to the library"
+            </div>
+            <div class="quote-author"> J.K. Rowling </div>
+        </div>
+
+        <!-- لمحة سريعة عن المحتوى المكتبي (اختياري) -->
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 20px;">
+            <div style="background: #0b1220; border: 1px solid var(--border); border-radius: 40px; padding: 8px 18px;">
+                <span style="color: #a5f3fc;">📖 مخطوطات</span>
+            </div>
+            <div style="background: #0b1220; border: 1px solid var(--border); border-radius: 40px; padding: 8px 18px;">
+                <span style="color: #a5f3fc;">🔢 ديوي عشري</span>
+            </div>
+            <div style="background: #0b1220; border: 1px solid var(--border); border-radius: 40px; padding: 8px 18px;">
+                <span style="color: #a5f3fc;">📇 فهرسة</span>
+            </div>
+            <div style="background: #0b1220; border: 1px solid var(--border); border-radius: 40px; padding: 8px 18px;">
+                <span style="color: #a5f3fc;">🏺 تراث</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- الفوتر الموحد -->
+    <footer>
+        <div class="footer-inner">
+            <div>© 2026 MaktabaPlay – منصة ألعاب مكتبية عربية</div>
+            <div><a href="contact.html">اتصل بنا</a> · <a href="partners.html">شراكات</a></div>
+        </div>
+    </footer>
+</body>
+
+</html>

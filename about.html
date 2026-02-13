@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>من نحن – MaktabaPlay</title>
+    <!-- الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- ملف التنسيق الموحد -->
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        /* تحسينات مخصصة للصفحة إن لزم */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .value-card {
+            background: #0b1220;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px 16px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--brand-2);
+        }
+
+        .value-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .value-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .value-desc {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .team-grid {
+            margin-top: 30px;
+        }
+
+        .member-role {
+            color: var(--brand-2);
+            font-weight: 600;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- شريط التنقل (مطابق لبقية الصفحات) -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <div class="brand-badge">مـ</div>
+                <span>MaktabaPlay</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">الرئيسية</a>
+                <a href="hangman.html">هانج مان المخطوط</a>
+                <a href="ladder-classification.html">السلم والتصنيف</a>
+                <a href="book-detective.html">محقق الكتب</a>
+                <a href="about.html" class="active">من نحن</a>
+                <a href="contact.html">تواصل</a>
+                <a href="partners.html">شركاء</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <section class="container">
+        <!-- بطاقة تعريفية عن المنصة -->
+        <div class="card" style="text-align: center;">
+            <div class="kicker">من نحن</div>
+            <h1 class="h1" style="font-size: 40px;">مرحباً بكم في MaktabaPlay</h1>
+            <p class="lead" style="max-width: 800px; margin: 20px auto;">
+                منصة عربية تهدف إلى تحويل المعرفة المكتبية والببليوجرافية إلى ألعاب تفاعلية ممتعة.
+                نؤمن بأن التعلم باللعب هو أسرع طريق لفهم علوم المكتبات والمخطوطات والتصنيف.
+            </p>
+        </div>
+
+        <!-- رؤيتنا وقيمنا -->
+        <div style="margin-top: 40px;">
+            <h2 class="kicker" style="font-size: 20px;">رؤيتنا</h2>
+            <div class="grid grid-2" style="margin-top: 10px;">
+                <div class="card">
+                    <h3 style="color: white; margin-bottom: 15px;">🎯 لماذا MaktabaPlay؟</h3>
+                    <p class="lead" style="font-size: 16px;">
+                        لأن المكتبات ليست مجرد أرفف كتب، بل عوالم مليئة بالقصص والمعرفة. أردنا بناء جسر بين التراث
+                        والتقنية
+                        عبر ألعاب تعزز الفهم وتنمي المهارات. نسعى لنشر ثقافة التصنيف والمخطوطات بين الطلاب والباحثين
+                        والمهتمين.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: white; margin-bottom: 15px;">✨ قيمنا</h3>
+                    <p class="lead" style="font-size: 16px;">
+                        • الإبداع في تقديم المحتوى التعليمي.<br>
+                        • الدقة والمصداقية في المعلومات.<br>
+                        • الشمولية والاهتمام بالتفاصيل.<br>
+                        • جعل التعلم تجربة شيقة.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- القيم بشكل بطاقات (اختياري) -->
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">📚</div>
+                <div class="value-title">تراث حي</div>
+                <div class="value-desc">نقدم المخطوطات والكتب القديمة بأسلوب عصري.</div>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🧠</div>
+                <div class="value-title">تفكير نقدي</div>
+                <div class="value-desc">ألعاب تحفز على التحليل والتدقيق.</div>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🤝</div>
+                <div class="value-title">مجتمع معرفي</div>
+                <div class="value-desc">نشجع التعاون بين المكتبيين والمبرمجين.</div>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🌍</div>
+                <div class="value-title">عالمية عربية</div>
+                <div class="value-desc">نحتفي باللغة العربية والمحتوى المحلي.</div>
+            </div>
+        </div>
+
+        <!-- الفريق (يمكن تعديله حسب الرغبة) -->
+        <div style="margin-top: 40px;">
+            <h2 class="kicker" style="font-size: 20px;">فريق العمل</h2>
+            <div class="team-grid">
+                <!-- عضو 1 -->
+                <div class="team-member">
+                    <div class="member-badge">أ</div>
+                    <div style="font-weight: 800; font-size: 20px;">محمد طارق عبدالمنعم</div>
+                    <div class="member-role">مؤسس ومطور </div>
+                    <div class="lead" style="font-size: 14px;">طالب فرقة ثالثه بشعبه المكتبات كلية الاداب جامعة القاهرة
+                    </div>
+                </div>
+            </div>
+
+            <!-- دعوة للانضمام -->
+            <div class="card" style="margin-top: 40px; text-align: center;">
+                <h3 class="kicker">انضم إلينا</h3>
+                <p class="lead" style="margin-bottom: 20px;">
+                    إذا كنت مكتبياً، مبرمجاً، أو مهتماً بالمخطوطات، فنحن نرحب بمساهمتك!
+                </p>
+                <a href="contact.html" class="btn">تواصل معنا</a>
+            </div>
+    </section>
+
+    <!-- الفوتر الموحد -->
+    <footer>
+        <div class="footer-inner">
+            <div>© 2026 MaktabaPlay – منصة ألعاب مكتبية عربية</div>
+            <div><a href="contact.html">اتصل بنا</a> · <a href="partners.html">شراكات</a></div>
+        </div>
+    </footer>
+</body>
+
+</html>
