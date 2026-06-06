@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>السلم والثعبان – MaktabaPlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: #111827;
+      --muted: #6b7280;
+      --text: #e5e7eb;
+      --brand: #22c55e;
+      --brand-2: #06b6d4;
+      --border: #1f2937;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --accent: #a78bfa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(180deg, #0b0f17, #0f172a);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+      background: rgba(11, 15, 23, 0.85);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 19px;
+      color: white;
+    }
+
+    .brand-badge {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #041014;
+      font-weight: 800;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      transition: .2s;
+      padding: 5px 10px;
+      border-radius: 20px;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: rgba(6, 182, 212, 0.1);
+      color: var(--brand-2);
+    }
+
+    /* LAYOUT */
+    .game-wrap {
+      max-width: 1280px;
+      margin: 20px auto;
+      padding: 16px;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      gap: 22px;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* BOARD */
+    .board-container {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    #gameBoard {
+      display: block;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+      cursor: default;
+    }
+
+    /* PLAYER TOKEN */
+    .player-token {
+      position: absolute;
+      pointer-events: none;
+      transition: left .4s cubic-bezier(.34, 1.56, .64, 1), top .4s cubic-bezier(.34, 1.56, .64, 1);
+      transform: translate(-50%, -50%);
+      z-index: 30;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8));
+    }
+
+    .player-token span {
+      display: block;
+      font-size: clamp(18px, 3.5vmin, 34px);
+      animation: tokenFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes tokenFloat {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-4px);
+      }
+    }
+
+    /* CONTROLS PANEL */
+    .controls {
+      width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel {
+      background: linear-gradient(160deg, #0e1626, #0b1220);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .panel-title {
+      color: var(--brand-2);
+      font-weight: 800;
+      font-size: 15px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* STATUS ROW */
+    .status-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-box {
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      text-align: center;
+    }
+
+    .stat-lbl {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .stat-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--brand-2);
+    }
+
+    /* DICE */
+    .dice-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dice-face {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #1a2540, #0f1a30);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      transition: all .3s;
+      flex-shrink: 0;
+    }
+
+    .dice-face.rolling {
+      animation: diceRoll .4s ease;
+    }
+
+    @keyframes diceRoll {
+      0% {
+        transform: rotate(0) scale(1);
+      }
+
+      25% {
+        transform: rotate(-15deg) scale(1.2);
+      }
+
+      50% {
+        transform: rotate(10deg) scale(.9);
+      }
+
+      75% {
+        transform: rotate(-5deg) scale(1.1);
+      }
+
+      100% {
+        transform: rotate(0) scale(1);
+      }
+    }
+
+    .dice-info {
+      flex: 1;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 11px 20px;
+      border: none;
+      border-radius: 30px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: 'Tajawal', sans-serif;
+      font-size: .95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: #041014;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* QUESTION PANEL */
+    .q-panel {
+      display: none;
+    }
+
+    .q-panel.show {
+      display: block;
+      animation: fadeSlide .3s ease;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .q-text {
+      font-weight: 700;
+      font-size: 15px;
+      color: white;
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+
+    .q-diff {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .q-diff.easy {
+      background: rgba(34, 197, 94, .15);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .q-diff.medium {
+      background: rgba(245, 158, 11, .15);
+      color: var(--warning);
+      border: 1px solid var(--warning);
+    }
+
+    .q-diff.hard {
+      background: rgba(239, 68, 68, .15);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .ans-btn {
+      width: 100%;
+      padding: 10px 14px;
+      margin: 5px 0;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all .2s;
+      text-align: right;
+      font-size: 14px;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 600;
+    }
+
+    .ans-btn:hover:not(:disabled) {
+      background: rgba(6, 182, 212, 0.08);
+      border-color: var(--brand-2);
+      transform: translateX(-3px);
+    }
+
+    .ans-btn.correct {
+      background: rgba(34, 197, 94, .12);
+      border-color: var(--success);
+      color: var(--success);
+      animation: ansCorrect .4s ease;
+    }
+
+    .ans-btn.wrong {
+      background: rgba(239, 68, 68, .1);
+      border-color: var(--danger);
+      color: var(--danger);
+      animation: ansWrong .4s ease;
+    }
+
+    .ans-btn:disabled {
+      cursor: not-allowed;
+    }
+
+    @keyframes ansCorrect {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.03);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes ansWrong {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-6px);
+      }
+
+      75% {
+        transform: translateX(6px);
+      }
+    }
+
+    /* TIMER BAR */
+    .timer-wrap {
+      margin-top: 10px;
+    }
+
+    .timer-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .timer-track {
+      width: 100%;
+      height: 5px;
+      background: #1a2540;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .timer-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      border-radius: 3px;
+      transition: width 1s linear, background .5s;
+    }
+
+    .timer-fill.warn {
+      background: linear-gradient(90deg, var(--warning), #d97706);
+    }
+
+    .timer-fill.danger {
+      background: linear-gradient(90deg, var(--danger), #b91c1c);
+    }
+
+    /* LOG */
+    .log-area {
+      max-height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .log-entry {
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, .02);
+      border-right: 2px solid var(--border);
+      animation: fadeSlide .3s ease;
+    }
+
+    .log-entry.good {
+      border-right-color: var(--success);
+      color: #86efac;
+    }
+
+    .log-entry.bad {
+      border-right-color: var(--danger);
+      color: #fca5a5;
+    }
+
+    .log-entry.info {
+      border-right-color: var(--brand-2);
+      color: #a5f3fc;
+    }
+
+    .log-entry.event {
+      border-right-color: var(--warning);
+      color: #fcd34d;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0e1626;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      z-index: 999;
+      transition: transform .4s cubic-bezier(.34, 1.56, .64, 1), opacity .4s;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast.snake {
+      border-color: var(--danger);
+      color: #fca5a5;
+    }
+
+    .toast.ladder {
+      border-color: var(--success);
+      color: #86efac;
+    }
+
+    .toast.win {
+      border-color: var(--warning);
+      color: #fcd34d;
+      font-size: 18px;
+    }
+
+    /* CONFETTI */
+    .confetti-p {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* FOOTER */
+    footer {
+      background: linear-gradient(90deg, #0e1626, #0b1220);
+      border-top: 1px solid var(--border);
+      padding: 18px 0;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--brand-2);
+      text-decoration: none;
+    }
+
+    @media(max-width:900px) {
+      .game-wrap {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .controls {
+        width: 100%;
+        max-width: 600px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-badge">مـ</div>
+        <span>MaktabaPlay</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">الرئيسية</a>
+        <a href="hangman.html">هانج مان المخطوط</a>
+        <a href="ladder-classification.html" class="active">السلم والتصنيف</a>
+        <a href="book-detective.html">محقق الكتب</a>
+        <a href="about.html">من نحن</a>
+        <a href="contact.html">تواصل</a>
+        <a href="partners.html">شركاء</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="game-wrap">
+    <!-- BOARD -->
+    <div class="board-container" id="boardContainer">
+      <canvas id="gameBoard"></canvas>
+      <div class="player-token" id="playerToken"><span>🎓</span></div>
+    </div>
+
+    <!-- CONTROLS -->
+    <aside class="controls">
+      <!-- STATUS -->
+      <div class="panel">
+        <div class="panel-title">📊 حالة اللعبة</div>
+        <div class="status-row">
+          <div class="stat-box">
+            <div class="stat-lbl">المربع الحالي</div>
+            <div class="stat-val" id="posDisp">1</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-lbl">الدورات</div>
+            <div class="stat-val" id="turnsDisp">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-lbl">سلالم</div>
+            <div class="stat-val" style="color:var(--success)" id="laddersDisp">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-lbl">ثعابين</div>
+            <div class="stat-val" style="color:var(--danger)" id="snakesDisp">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DICE -->
+      <div class="panel">
+        <div class="panel-title">🎲 النرد</div>
+        <div class="dice-area">
+          <div class="dice-face" id="diceFace">🎲</div>
+          <div class="dice-info" id="diceInfo">اضغط "رمية النرد" للبدء</div>
+        </div>
+        <div style="margin-top:12px;" class="btn-row">
+          <button class="btn btn-primary" id="rollBtn">🎲 رمية النرد</button>
+          <button class="btn btn-secondary" id="resetBtn">🔄 إعادة</button>
+        </div>
+      </div>
+
+      <!-- QUESTION -->
+      <div class="panel q-panel" id="qPanel">
+        <div class="panel-title">❓ سؤال</div>
+        <span class="q-diff" id="qDiff"></span>
+        <div class="q-text" id="qText"></div>
+        <div id="qAnswers"></div>
+        <div class="timer-wrap">
+          <div class="timer-label"><span>الوقت المتبقي</span><span id="qTimerLbl">30 ث</span></div>
+          <div class="timer-track">
+            <div class="timer-fill" id="qTimerBar" style="width:100%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOG -->
+      <div class="panel">
+        <div class="panel-title">📋 سجل الأحداث</div>
+        <div class="log-area" id="logArea"></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer>
+    <div style="max-width:1300px;margin:0 auto;padding:0 20px;">
+      <div>© 2026 MaktabaPlay – منصة ألعاب مكتبية عربية</div>
+      <div><a href="contact.html">اتصل بنا</a> · <a href="partners.html">شراكات</a></div>
+    </div>
+  </footer>
+
+  <script>
+    // =====================================================
+    //  BOARD DATA — matching the real snake.jpg layout
+    // =====================================================
+    const COLS = 10, ROWS = 10, N = 100;
+    const QUESTION_TIME = 30;
+
+    // Ladders: foot -> head (go UP)
+    const LADDERS = {
+      4: 14, 9: 31, 20: 38, 28: 84,
+      40: 59, 51: 67, 63: 81, 71: 91
+    };
+    // Snakes: head -> tail (go DOWN)
+    const SNAKES = {
+      17: 7, 54: 34, 62: 19, 64: 60,
+      87: 24, 93: 73, 95: 75, 99: 78
+    };
+
+    // BOARD COLORS — 10×10 grid, row 0=bottom
+    // Colors from the real board image: red, green, yellow, blue, white
+    const CELL_COLORS = [
+      // row 0 (squares 1-10, bottom)
+      ['#d32f2f', '#fff', '#388e3c', '#1565c0', '#fff', '#388e3c', '#fff', '#fbc02d', '#388e3c', '#1565c0'],
+      // row 1 (squares 11-20)
+      ['#1565c0', '#fff', '#fbc02d', '#fff', '#d32f2f', '#fbc02d', '#388e3c', '#fff', '#d32f2f', '#fff'],
+      // row 2 (squares 21-30)
+      ['#388e3c', '#d32f2f', '#fff', '#fbc02d', '#fff', '#1565c0', '#fbc02d', '#d32f2f', '#fff', '#1565c0'],
+      // row 3 (squares 31-40)
+      ['#fff', '#1565c0', '#d32f2f', '#fbc02d', '#fff', '#d32f2f', '#388e3c', '#1565c0', '#fbc02d', '#388e3c'],
+      // row 4 (squares 41-50)
+      ['#1565c0', '#d32f2f', '#fbc02d', '#fff', '#388e3c', '#fff', '#d32f2f', '#1565c0', '#fbc02d', '#388e3c'],
+      // row 5 (squares 51-60)
+      ['#388e3c', '#1565c0', '#d32f2f', '#fbc02d', '#fff', '#d32f2f', '#388e3c', '#1565c0', '#fbc02d', '#fff'],
+      // row 6 (squares 61-70)
+      ['#d32f2f', '#388e3c', '#1565c0', '#fbc02d', '#fff', '#1565c0', '#fbc02d', '#388e3c', '#fff', '#d32f2f'],
+      // row 7 (squares 71-80)
+      ['#fbc02d', '#d32f2f', '#388e3c', '#fff', '#1565c0', '#fbc02d', '#d32f2f', '#388e3c', '#1565c0', '#fff'],
+      // row 8 (squares 81-90)
+      ['#1565c0', '#fbc02d', '#d32f2f', '#388e3c', '#fff', '#d32f2f', '#fbc02d', '#1565c0', '#388e3c', '#fff'],
+      // row 9 (squares 91-100, top)
+      ['#fff', '#d32f2f', '#388e3c', '#1565c0', '#fbc02d', '#d32f2f', '#388e3c', '#fff', '#1565c0', '#388e3c']
+    ];
+
+    // =====================================================
+    //  QUESTION BANK — علم المكتبات والتصنيف
+    // =====================================================
+    const QUESTIONS = {
+      easy: [
+        { q: 'ما هدف نظام تصنيف ديوي العشري؟', o: ['ترقيم الدوريات فقط', 'تصنيف الكتب حسب الموضوع برموز عددية', 'ترتيب الكتب أبجدياً', 'إحصاء الكتب'], a: 1 },
+        { q: 'كم فئة رئيسية في نظام ديوي؟', o: ['5', '10', '100', '20'], a: 1 },
+        { q: 'أي نطاق يخص الأدب في ديوي؟', o: ['700', '800', '900', '600'], a: 1 },
+        { q: 'أي نطاق يخص العلوم الاجتماعية؟', o: ['300', '200', '100', '400'], a: 0 },
+        { q: 'ما رقم ديوي للفلسفة؟', o: ['100', '200', '300', '400'], a: 0 },
+        { q: 'أي نطاق يخص التاريخ والجغرافيا؟', o: ['900', '800', '700', '600'], a: 0 },
+        { q: 'الرقم 600 في ديوي يغطي؟', o: ['العلوم التطبيقية', 'الفنون', 'الأدب', 'التاريخ'], a: 0 },
+        { q: 'الرقم 000 في ديوي يغطي؟', o: ['المعارف العامة', 'الفلسفة', 'الدين', 'الاجتماعيات'], a: 0 },
+        { q: 'ديوي يستخدم في تصنيف الكتب؟', o: ['رموز رقمية', 'حروف هجائية', 'صور', 'ألوان'], a: 0 },
+        { q: 'ما رقم ديوي للدين؟', o: ['200', '100', '300', '400'], a: 0 },
+        { q: 'الفهرسة في المكتبات تعني؟', o: ['وصف الوثيقة ببياناتها', 'بيع الكتب', 'طباعة الكتب', 'توزيع الكتب'], a: 0 },
+        { q: 'ما اختصار ISBN؟', o: ['الرقم الدولي المعياري للكتاب', 'الفهرس الدولي', 'قاعدة بيانات الكتب', 'نظام الفهرسة'], a: 0 },
+      ],
+      medium: [
+        { q: 'أي نطاق للعلوم التطبيقية والهندسة؟', o: ['600-699', '500-599', '700-799', '800-899'], a: 0 },
+        { q: 'الرقم 520 في ديوي يرمز إلى؟', o: ['الفلك', 'الكيمياء', 'الفيزياء', 'الأحياء'], a: 0 },
+        { q: 'الرقم 330 في ديوي يغطي؟', o: ['الاقتصاد', 'القانون', 'التربية', 'الجغرافيا'], a: 0 },
+        { q: 'الرقم 370 في ديوي يغطي؟', o: ['التربية', 'الفلسفة', 'الدين', 'الاجتماع'], a: 0 },
+        { q: 'نظام MARC يُستخدم في؟', o: ['الفهرسة الآلية', 'الطباعة', 'توزيع الكتب', 'تصميم المكتبات'], a: 0 },
+        { q: 'الرقم 910 في ديوي يغطي؟', o: ['الجغرافيا والسفر', 'التاريخ', 'الأحياء', 'الفيزياء'], a: 0 },
+        { q: 'الرقم 530 في ديوي يغطي؟', o: ['الفيزياء', 'الكيمياء', 'الفلك', 'الأحياء'], a: 0 },
+        { q: 'الرقم 340 في ديوي يغطي؟', o: ['القانون', 'الاقتصاد', 'السياسة', 'الاجتماع'], a: 0 },
+        { q: 'الثيسوروس في التكشيف هو؟', o: ['أداة ضبط المصطلحات', 'قاموس لغوي عادي', 'فهرس موضوعي', 'نظام ترقيم'], a: 0 },
+        { q: 'التكشيف يعني؟', o: ['تحليل الوثيقة واستخراج مصطلحاتها', 'طباعة الكتب', 'توزيع المجلات', 'شراء الكتب'], a: 0 },
+        { q: 'الرقم 150 في ديوي يغطي؟', o: ['علم النفس', 'الطب', 'الفلك', 'القانون'], a: 0 },
+        { q: 'نظام UDC هو؟', o: ['التصنيف العالمي للمعلومات', 'نظام فهرسة أمريكي', 'قاعدة بيانات دولية', 'نظام طباعة'], a: 0 },
+      ],
+      hard: [
+        { q: 'الفرق بين الاستخلاص الإعلامي والإرشادي؟', o: ['الإعلامي يعرض النتائج، الإرشادي يصف المحتوى', 'لا فرق بينهما', 'الإرشادي أطول دائماً', 'الإعلامي للكتب فقط'], a: 0 },
+        { q: 'الكولوفون في المخطوطات هو؟', o: ['معلومات الناسخ في النهاية', 'مقدمة الكتاب', 'فهرس الموضوعات', 'هامش الصفحة'], a: 0 },
+        { q: 'الرقم 371.9 في ديوي يغطي؟', o: ['التعليم الخاص', 'الهندسة', 'الطب', 'الفنون'], a: 0 },
+        { q: 'الرقم 808 في ديوي يشير إلى؟', o: ['الخطابة والإنشاء', 'الهندسة', 'التاريخ', 'الطب'], a: 0 },
+        { q: 'الوراقة في التراث العربي تعني؟', o: ['حرفة النسخ والتجليد والتصحيح', 'صناعة الورق الحديثة', 'نسخ الكتب رقمياً', 'بيع الكتب'], a: 0 },
+        { q: 'الرقم 941 في ديوي يخص؟', o: ['تاريخ بريطانيا', 'تاريخ فرنسا', 'تاريخ ألمانيا', 'تاريخ إيطاليا'], a: 0 },
+        { q: 'الرقم 030 في ديوي يغطي؟', o: ['الموسوعات العامة', 'الفلسفة', 'الدين', 'اللغة'], a: 0 },
+        { q: 'الفهرس البطاقي في المكتبات استُبدل بـ؟', o: ['فهرس الاتحاد الإلكتروني OPAC', 'الفهرس الورقي', 'قاعدة بيانات حرفية', 'نظام ديوي'], a: 0 },
+        { q: 'الرقم 597.7 في ديوي يشير إلى؟', o: ['الأسماك', 'الطيور', 'الثدييات', 'الزواحف'], a: 0 },
+        { q: 'تحقيق المخطوطات يعني؟', o: ['دراسة النص ومقارنة النسخ وإصداره محققاً', 'ترجمة المخطوط', 'رقمنة المخطوط', 'طباعة المخطوط'], a: 0 },
+        { q: 'نظام تصنيف الكونجرس يعتمد على؟', o: ['حروف وأرقام معاً', 'أرقام عشرية فقط', 'حروف هجائية فقط', 'رموز خاصة'], a: 0 },
+        { q: 'الرقم 333 في ديوي يغطي؟', o: ['الاقتصاد الزراعي وإدارة الأراضي', 'الرياضيات', 'التاريخ', 'الطب'], a: 0 },
+      ]
+    };
+
+    // =====================================================
+    //  CANVAS BOARD RENDERER
+    // =====================================================
+    const canvas = document.getElementById('gameBoard');
+    const ctx = canvas.getContext('2d');
+    let BOARD_SIZE = 0, CELL = 0;
+
+    function getSquareCoords(sq) {
+      // sq: 1-100
+      const idx = sq - 1;
+      const rowFromBottom = Math.floor(idx / COLS);
+      const rowFromTop = ROWS - 1 - rowFromBottom;
+      let col = idx % COLS;
+      if (rowFromBottom % 2 === 1) col = COLS - 1 - col; // serpentine right-to-left on odd rows from bottom
+      // In LTR canvas: col 0 = left
+      // But board is displayed RTL-ish in the image (100 is top-left)
+      // Mirror col for RTL: col 0 becomes rightmost
+      const canvasCol = COLS - 1 - col;
+      const cx = (canvasCol + 0.5) * CELL;
+      const cy = (rowFromTop + 0.5) * CELL;
+      return { cx, cy, col: canvasCol, row: rowFromTop };
+    }
+
+    function drawBoard() {
+      ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
+
+      // Draw cells
+      for (let sq = 1; sq <= N; sq++) {
+        const idx = sq - 1;
+        const rowFromBottom = Math.floor(idx / COLS);
+        const rowFromTop = ROWS - 1 - rowFromBottom;
+        let col = idx % COLS;
+        if (rowFromBottom % 2 === 1) col = COLS - 1 - col;
+        const canvasCol = COLS - 1 - col;
+        const x = canvasCol * CELL, y = rowFromTop * CELL;
+        const colorRow = rowFromBottom; // use rowFromBottom as row index into CELL_COLORS
+        const colorCol = col; // original col before mirror
+        const cellColor = CELL_COLORS[colorRow % 10][colorCol % 10];
+        ctx.fillStyle = cellColor;
+        ctx.fillRect(x, y, CELL, CELL);
+        // Cell border
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x, y, CELL, CELL);
+        // Special squares highlights
+        if (LADDERS[sq]) {
+          ctx.fillStyle = 'rgba(34,197,94,0.18)';
+          ctx.fillRect(x + 2, y + 2, CELL - 4, CELL - 4);
+        }
+        if (SNAKES[sq]) {
+          ctx.fillStyle = 'rgba(239,68,68,0.18)';
+          ctx.fillRect(x + 2, y + 2, CELL - 4, CELL - 4);
+        }
+        // Square number
+        ctx.font = `bold ${CELL * 0.22}px Tajawal,sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        // number color: white on dark, dark on light
+        const isDark = (cellColor === '#d32f2f' || cellColor === '#388e3c' || cellColor === '#1565c0');
+        ctx.fillStyle = isDark ? 'rgba(255,255,255,0.92)' : 'rgba(0,0,0,0.75)';
+        // number in top-right of cell
+        ctx.font = `bold ${Math.max(10, CELL * 0.2)}px Tajawal,sans-serif`;
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'top';
+        ctx.fillText(sq, x + CELL - 4, y + 3);
+      }
+
+      // FINISH label on sq 100
+      {
+        const { cx, cy } = getSquareCoords(100);
+        ctx.font = `bold ${CELL * 0.18}px Tajawal,sans-serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#ffd700';
+        ctx.fillText('FINISH', cx, cy + CELL * 0.12);
+      }
+
+      // Draw LADDERS
+      drawLadders();
+      // Draw SNAKES
+      drawSnakes();
+    }
+
+    function drawLadders() {
+      Object.entries(LADDERS).forEach(([from, to]) => {
+        const a = getSquareCoords(parseInt(from));
+        const b = getSquareCoords(parseInt(to));
+        const dx = b.cx - a.cx, dy = b.cy - a.cy;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        const nx = -dy / len * CELL * 0.1, ny = dx / len * CELL * 0.1;
+
+        // Ladder rails
+        ctx.strokeStyle = '#8B6914';
+        ctx.lineWidth = CELL * 0.07;
+        ctx.lineCap = 'round';
+        // Left rail
+        ctx.beginPath(); ctx.moveTo(a.cx + nx, a.cy + ny); ctx.lineTo(b.cx + nx, b.cy + ny); ctx.stroke();
+        // Right rail
+        ctx.beginPath(); ctx.moveTo(a.cx - nx, a.cy - ny); ctx.lineTo(b.cx - nx, b.cy - ny); ctx.stroke();
+
+        // Rungs
+        ctx.strokeStyle = '#c8960c';
+        ctx.lineWidth = CELL * 0.045;
+        const rungs = Math.max(3, Math.round(len / CELL));
+        for (let i = 0; i <= rungs; i++) {
+          const t = i / rungs;
+          const rx = a.cx + dx * t, ry = a.cy + dy * t;
+          ctx.beginPath(); ctx.moveTo(rx + nx, ry + ny); ctx.lineTo(rx - nx, ry - ny); ctx.stroke();
+        }
+
+        // Glow at base
+        ctx.beginPath();
+        ctx.arc(a.cx, a.cy, CELL * 0.14, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(34,197,94,0.35)';
+        ctx.fill();
+      });
+    }
+
+    function drawSnakes() {
+      const snakeColors = [
+        { body: '#c62828', belly: '#ef9a9a' },
+        { body: '#2e7d32', belly: '#a5d6a7' },
+        { body: '#f57f17', belly: '#fff176' },
+        { body: '#1565c0', belly: '#90caf9' },
+        { body: '#6a1b9a', belly: '#ce93d8' },
+        { body: '#00695c', belly: '#80cbc4' },
+        { body: '#4e342e', belly: '#d7ccc8' },
+        { body: '#37474f', belly: '#b0bec5' },
+      ];
+      let colorIdx = 0;
+      Object.entries(SNAKES).forEach(([from, to]) => {
+        const head = getSquareCoords(parseInt(from));
+        const tail = getSquareCoords(parseInt(to));
+        const sc = snakeColors[colorIdx % snakeColors.length];
+        colorIdx++;
+        drawSingleSnake(head, tail, sc);
+      });
+    }
+
+    function drawSingleSnake(head, tail, sc) {
+      const dx = tail.cx - head.cx, dy = tail.cy - head.cy;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      // Build a curved path with control points
+      const cpx1 = head.cx + dy * 0.4, cpy1 = head.cy - dx * 0.4;
+      const cpx2 = tail.cx + dy * 0.3, cpy2 = tail.cy - dx * 0.3;
+
+      // Body (thick)
+      ctx.strokeStyle = sc.body;
+      ctx.lineWidth = CELL * 0.16;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(tail.cx, tail.cy);
+      ctx.bezierCurveTo(cpx2, cpy2, cpx1, cpy1, head.cx, head.cy);
+      ctx.stroke();
+
+      // Belly highlight (thinner, lighter)
+      ctx.strokeStyle = sc.belly;
+      ctx.lineWidth = CELL * 0.07;
+      ctx.beginPath();
+      ctx.moveTo(tail.cx, tail.cy);
+      ctx.bezierCurveTo(cpx2, cpy2, cpx1, cpy1, head.cx, head.cy);
+      ctx.stroke();
+
+      // HEAD circle
+      ctx.beginPath();
+      ctx.arc(head.cx, head.cy, CELL * 0.15, 0, Math.PI * 2);
+      ctx.fillStyle = sc.body;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Eyes
+      const eyeAngle = Math.atan2(dy, dx);
+      const e1x = head.cx + Math.cos(eyeAngle + 1.1) * CELL * 0.1;
+      const e1y = head.cy + Math.sin(eyeAngle + 1.1) * CELL * 0.1;
+      const e2x = head.cx + Math.cos(eyeAngle - 1.1) * CELL * 0.1;
+      const e2y = head.cy + Math.sin(eyeAngle - 1.1) * CELL * 0.1;
+      ctx.fillStyle = 'white';
+      ctx.beginPath(); ctx.arc(e1x, e1y, CELL * 0.04, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(e2x, e2y, CELL * 0.04, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#111';
+      ctx.beginPath(); ctx.arc(e1x, e1y, CELL * 0.02, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(e2x, e2y, CELL * 0.02, 0, Math.PI * 2); ctx.fill();
+
+      // Tongue
+      const tx = head.cx + Math.cos(eyeAngle) * CELL * 0.18;
+      const ty = head.cy + Math.sin(eyeAngle) * CELL * 0.18;
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = CELL * 0.025;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(head.cx + Math.cos(eyeAngle) * CELL * 0.14, head.cy + Math.sin(eyeAngle) * CELL * 0.14);
+      ctx.lineTo(tx, ty);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(tx + Math.cos(eyeAngle + 0.5) * CELL * 0.07, ty + Math.sin(eyeAngle + 0.5) * CELL * 0.07);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(tx + Math.cos(eyeAngle - 0.5) * CELL * 0.07, ty + Math.sin(eyeAngle - 0.5) * CELL * 0.07);
+      ctx.stroke();
+    }
+
+    function resizeBoard() {
+      const maxSize = Math.min(window.innerWidth - 380, window.innerHeight - 100, 700);
+      BOARD_SIZE = Math.max(320, maxSize);
+      CELL = BOARD_SIZE / COLS;
+      canvas.width = BOARD_SIZE;
+      canvas.height = BOARD_SIZE;
+      canvas.style.width = BOARD_SIZE + 'px';
+      canvas.style.height = BOARD_SIZE + 'px';
+      drawBoard();
+      updateTokenPosition();
+    }
+
+    // =====================================================
+    //  GAME STATE
+    // =====================================================
+    let position = 1, turns = 0, laddersCount = 0, snakesCount = 0;
+    let gameOver = false, skipTurn = false;
+    let questionTimer = null, qTimeLeft = 0;
+    let currentDice = 0;
+    let recentQ = { easy: [], medium: [], hard: [] };
+
+    function cellPixel(sq) {
+      const { cx, cy } = getSquareCoords(sq);
+      const ratio = BOARD_SIZE / canvas.width;
+      const boardRect = document.getElementById('boardContainer').getBoundingClientRect();
+      // Position relative to container
+      return { left: cx + 'px', top: cy + 'px' };
+    }
+
+    function updateTokenPosition() {
+      const { cx, cy } = getSquareCoords(position);
+      const tok = document.getElementById('playerToken');
+      tok.style.left = cx + 'px';
+      tok.style.top = cy + 'px';
+    }
+
+    function updateStats() {
+      document.getElementById('posDisp').textContent = position;
+      document.getElementById('turnsDisp').textContent = turns;
+      document.getElementById('laddersDisp').textContent = laddersCount;
+      document.getElementById('snakesDisp').textContent = snakesCount;
+    }
+
+    // =====================================================
+    //  LOG
+    // =====================================================
+    function addLog(text, type = '') {
+      const el = document.createElement('div');
+      el.className = 'log-entry ' + (type || '');
+      el.textContent = text;
+      const log = document.getElementById('logArea');
+      log.prepend(el);
+      while (log.children.length > 8) log.removeChild(log.lastChild);
+    }
+
+    // =====================================================
+    //  TOAST
+    // =====================================================
+    let toastTimer = null;
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast ' + (type || '');
+      void t.offsetWidth;
+      t.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    // =====================================================
+    //  MOVEMENT
+    // =====================================================
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function animateMoveStepByStep(target) {
+      const step = target > position ? 1 : -1;
+      while (position !== target) {
+        position += step;
+        updateTokenPosition();
+        updateStats();
+        await wait(300);
+      }
+    }
+
+    async function movePlayerTo(target) {
+      if (target < 1) target = 1;
+      if (target > N) target = N;
+      await animateMoveStepByStep(target);
+
+      // Check special squares
+      if (LADDERS[position]) {
+        const dest = LADDERS[position];
+        addLog(`🪜 سلم! من ${position} إلى ${dest}`, 'good');
+        showToast(`🪜 سلم! صعود إلى ${dest}`, 'ladder');
+        laddersCount++;
+        updateStats();
+        await wait(600);
+        await movePlayerTo(dest);
+        return;
+      }
+      if (SNAKES[position]) {
+        const dest = SNAKES[position];
+        addLog(`🐍 ثعبان! من ${position} إلى ${dest}`, 'bad');
+        showToast(`🐍 ثعبان! هبوط إلى ${dest}`, 'snake');
+        snakesCount++;
+        // shake token
+        const tok = document.getElementById('playerToken');
+        tok.style.transform = 'translate(-50%,-50%) rotate(15deg) scale(1.3)';
+        await wait(200);
+        tok.style.transform = 'translate(-50%,-50%) rotate(-10deg)';
+        await wait(200);
+        tok.style.transform = 'translate(-50%,-50%)';
+        updateStats();
+        await wait(400);
+        await movePlayerTo(dest);
+        return;
+      }
+    }
+
+    // =====================================================
+    //  QUESTION ENGINE
+    // =====================================================
+    function pickQ(dice) {
+      let bucket = dice <= 2 ? 'easy' : dice <= 4 ? 'medium' : 'hard';
+      const arr = QUESTIONS[bucket];
+      const recent = recentQ[bucket] || [];
+      const avail = arr.map((_, i) => i).filter(i => !recent.includes(i));
+      let idx;
+      if (!avail.length) { idx = Math.floor(Math.random() * arr.length); recentQ[bucket] = [idx]; }
+      else {
+        idx = avail[Math.floor(Math.random() * avail.length)];
+        recentQ[bucket].push(idx);
+        if (recentQ[bucket].length > 4) recentQ[bucket].shift();
+      }
+      return { q: arr[idx], bucket };
+    }
+
+    function showQuestion(dice) {
+      const { q, bucket } = pickQ(dice);
+      const diffText = { easy: 'سهل', medium: 'متوسط', hard: 'صعب' }[bucket];
+      const diffEl = document.getElementById('qDiff');
+      diffEl.textContent = diffText;
+      diffEl.className = 'q-diff ' + bucket;
+      document.getElementById('qText').textContent = q.q;
+      const answersDiv = document.getElementById('qAnswers');
+      answersDiv.innerHTML = '';
+      q.o.forEach((opt, i) => {
+        const b = document.createElement('button');
+        b.className = 'ans-btn';
+        b.textContent = opt;
+        b.onclick = () => onAnswer(i, q.a, dice);
+        answersDiv.appendChild(b);
+      });
+      document.getElementById('qPanel').classList.add('show');
+      startQTimer(dice);
+    }
+
+    function startQTimer(dice) {
+      qTimeLeft = QUESTION_TIME;
+      if (questionTimer) clearInterval(questionTimer);
+      updateTimerUI();
+      questionTimer = setInterval(() => {
+        qTimeLeft--;
+        updateTimerUI();
+        if (qTimeLeft <= 0) {
+          clearInterval(questionTimer); questionTimer = null;
+          document.getElementById('qPanel').classList.remove('show');
+          addLog('⌛ انتهى الوقت! الرجوع للخلف', 'bad');
+          onWrong(dice);
+        }
+      }, 1000);
+    }
+
+    function updateTimerUI() {
+      const pct = (qTimeLeft / QUESTION_TIME) * 100;
+      const bar = document.getElementById('qTimerBar');
+      document.getElementById('qTimerLbl').textContent = qTimeLeft + ' ث';
+      bar.style.width = pct + '%';
+      bar.className = 'timer-fill' + (pct < 30 ? ' danger' : pct < 60 ? ' warn' : '');
+    }
+
+    function onAnswer(idx, correct, dice) {
+      if (questionTimer) { clearInterval(questionTimer); questionTimer = null; }
+      document.querySelectorAll('.ans-btn').forEach((b, i) => {
+        b.disabled = true;
+        if (i === correct) b.classList.add('correct');
+        else if (i === idx && idx !== correct) b.classList.add('wrong');
+      });
+      const isCorrect = (idx === correct);
+      addLog(isCorrect ? '✅ إجابة صحيحة' : '❌ إجابة خاطئة', isCorrect ? 'good' : 'bad');
+      setTimeout(() => {
+        document.getElementById('qPanel').classList.remove('show');
+        if (isCorrect) onCorrect(dice); else onWrong(dice);
+      }, 900);
+    }
+
+    async function onCorrect(dice) {
+      document.getElementById('rollBtn').disabled = true;
+      const target = Math.min(N, position + dice);
+      await movePlayerTo(target);
+      if (position >= N) { endGame(); }
+      else { document.getElementById('rollBtn').disabled = false; }
+    }
+
+    async function onWrong(dice) {
+      document.getElementById('rollBtn').disabled = true;
+      const target = Math.max(1, position - dice);
+      await movePlayerTo(target);
+      document.getElementById('rollBtn').disabled = false;
+    }
+
+    function endGame() {
+      gameOver = true;
+      document.getElementById('rollBtn').disabled = true;
+      addLog('🏆 انتصرت! وصلت للمربع 100!', 'info');
+      showToast('🏆 تهانينا! فزت باللعبة!', 'win');
+      confetti();
+    }
+
+    // =====================================================
+    //  DICE FACES
+    // =====================================================
+    const DICE_EMOJI = ['🎲', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+    function rollDice() {
+      if (gameOver) { showToast('اللعبة انتهت! أعد البدء'); return; }
+      if (!document.getElementById('qPanel').classList.contains('show') === false) return;
+      if (skipTurn) { addLog('⚡ خسارة الدور', 'event'); skipTurn = false; showToast('⚡ خسارة الدور هذا!'); return; }
+      turns++;
+      updateStats();
+      // Animate dice
+      const face = document.getElementById('diceFace');
+      face.classList.remove('rolling');
+      void face.offsetWidth;
+      face.classList.add('rolling');
+      // Random roll with animation frames
+      let count = 0;
+      const anim = setInterval(() => {
+        const r = Math.floor(Math.random() * 6) + 1;
+        face.textContent = DICE_EMOJI[r];
+        count++;
+        if (count >= 8) {
+          clearInterval(anim);
+          currentDice = r;
+          face.textContent = DICE_EMOJI[r];
+          document.getElementById('diceInfo').textContent = `رميت ${r} — أجب على السؤال`;
+          addLog(`🎲 نتيجة النرد: ${r}`, 'info');
+          showQuestion(currentDice);
+        }
+      }, 60);
+    }
+
+    // =====================================================
+    //  CONFETTI
+    // =====================================================
+    function confetti() {
+      const colors = ['#22c55e', '#06b6d4', '#f59e0b', '#a78bfa', '#fb7185', '#ffd700'];
+      for (let i = 0; i < 80; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-p';
+        const size = 6 + Math.random() * 10;
+        el.style.cssText = `left:${Math.random() * 100}vw;width:${size}px;height:${size}px;background:${colors[~~(Math.random() * colors.length)]};border-radius:${Math.random() > .5 ? '50%' : '2px'};animation-duration:${1.5 + Math.random() * 2}s;animation-delay:${Math.random() * .8}s;`;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 4000);
+      }
+    }
+
+    // =====================================================
+    //  RESET
+    // =====================================================
+    function resetGame() {
+      if (questionTimer) { clearInterval(questionTimer); questionTimer = null; }
+      position = 1; turns = 0; laddersCount = 0; snakesCount = 0;
+      currentDice = 0; gameOver = false; skipTurn = false;
+      recentQ = { easy: [], medium: [], hard: [] };
+      document.getElementById('rollBtn').disabled = false;
+      document.getElementById('qPanel').classList.remove('show');
+      document.getElementById('diceFace').textContent = '🎲';
+      document.getElementById('diceInfo').textContent = 'اضغط "رمية النرد" للبدء';
+      updateTokenPosition();
+      updateStats();
+      addLog('🔄 بدأت لعبة جديدة', 'info');
+    }
+
+    // =====================================================
+    //  INIT
+    // =====================================================
+    document.getElementById('rollBtn').addEventListener('click', rollDice);
+    document.getElementById('resetBtn').addEventListener('click', resetGame);
+    window.addEventListener('resize', () => { resizeBoard(); });
+    resizeBoard();
+    updateStats();
+    addLog('👋 مرحباً! اضغط النرد للبدء', 'info');
+  </script>
+</body>
+
+</html>

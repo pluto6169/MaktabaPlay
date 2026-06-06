@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>محقق MARC21 – الأدلة المفقودة</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    /* ========== DARK THEME (من تصميم الأسود الأول) ========== */
+    :root {
+      --brand: #22c55e;
+      --brand-2: #06b6d4;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: #1e293b;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg: #0b0f17;
+      --card-bg: #0e1626;
+      --accent: #c89b3c;
+      --accent2: #e8c06a;
+      --panel: #0e1626;
+      --panel2: #1a2335;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(180deg, #0b0f17, #0f172a);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* نجوم متحركة خلفية */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 70%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 15%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 55%, rgba(200, 155, 60, 0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 85%, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .navbar {
+      background: linear-gradient(90deg, #0e1626, #0b1220);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 20px;
+      color: white;
+    }
+
+    .brand-badge {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #041014;
+      font-weight: 800;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.2s;
+      padding: 5px 10px;
+      border-radius: 20px;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: rgba(6, 182, 212, 0.1);
+      color: var(--brand-2);
+    }
+
+    footer {
+      background: linear-gradient(90deg, #0e1626, #0b1220);
+      border-top: 1px solid var(--border);
+      padding: 20px 0;
+      margin-top: auto;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* الحاوية الرئيسية للعبة */
+    .game-main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* تصميم لوحة التحقيق – يمزج بين التصميم الأسود + الشخصية */
+    .detective-dashboard {
+      max-width: 1400px;
+      width: 100%;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    /* اللوحة اليسرى (شخصية + أدلة + هيد) */
+    .left-invest-panel {
+      flex: 1.2;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* بطاقة الشخصية المتحركة */
+    .character-card {
+      background: linear-gradient(145deg, #0e1626, #0a0f1c);
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      padding: 16px;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .scene-container {
+      position: relative;
+      background: #0a0e18;
+      border-radius: 24px;
+      overflow: hidden;
+    }
+
+    #scene-canvas {
+      display: block;
+      width: 100%;
+      background: radial-gradient(ellipse at 30% 40%, #1a1830, #0b0a14);
+      border-radius: 20px;
+    }
+
+    #speech-bubble {
+      background: #1e2a3a;
+      border-right: 5px solid var(--accent);
+      border-radius: 20px;
+      padding: 14px 18px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #f0e8d0;
+      transition: 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    #evidence-wrap {
+      background: rgba(14, 22, 38, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 16px;
+    }
+
+    #evidence-wrap h3 {
+      font-size: 0.8rem;
+      color: var(--accent2);
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .evidence-tag {
+      display: inline-block;
+      background: rgba(200, 155, 60, 0.15);
+      border: 1px solid rgba(200, 155, 60, 0.4);
+      border-radius: 40px;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      margin: 4px 4px 0 0;
+      color: var(--accent2);
+      font-weight: 500;
+    }
+
+    /* اللوحة اليمنى (تسجيلة مارك + السؤال) */
+    .right-invest-panel {
+      flex: 2.2;
+      min-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* hud مدمج */
+    .hud-modern {
+      background: #0e1626cc;
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .level-badge {
+      background: #1e2a3e;
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-weight: bold;
+    }
+
+    .progress-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .score-box {
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--accent2);
+    }
+
+    /* بطاقة التسجيلة MARC21 */
+    .marc-card {
+      background: #0e1626;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 24px;
+    }
+
+    .marc-field {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      margin: 8px 0;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 20px;
+      border-right: 3px solid transparent;
+      transition: 0.1s;
+    }
+
+    .marc-field.has-error {
+      border-right-color: var(--danger);
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .marc-tag {
+      font-weight: bold;
+      color: #90e0ef;
+      min-width: 70px;
+    }
+
+    .marc-ind {
+      color: #f9a8d4;
+      font-family: monospace;
+      min-width: 55px;
+    }
+
+    .marc-data {
+      flex: 1;
+      word-break: break-word;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+    }
+
+    .error-badge {
+      background: var(--danger);
+      color: white;
+      font-size: 0.65rem;
+      border-radius: 20px;
+      padding: 2px 10px;
+      margin-right: 10px;
+    }
+
+    /* منطقة السؤال والتفاعل */
+    .question-arena {
+      background: #0e1626;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 24px;
+    }
+
+    .q-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      font-size: 0.8rem;
+    }
+
+    .timer-container {
+      background: #1e293b;
+      border-radius: 30px;
+      padding: 4px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .timer-fill-bar {
+      width: 60px;
+      height: 5px;
+      background: #334155;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .timer-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--success);
+      transition: width 0.1s linear;
+    }
+
+    .q-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 16px 0;
+    }
+
+    .answer-input-area {
+      display: flex;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .answer-input-area input {
+      flex: 1;
+      background: #0f1a2f;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 14px 20px;
+      color: white;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 40px;
+      padding: 12px 26px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: #041014;
+      box-shadow: 0 6px 14px rgba(6, 182, 212, 0.2);
+    }
+
+    .btn-hint {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-next {
+      background: linear-gradient(135deg, var(--success), #059669);
+      color: white;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .hint-box {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--warning);
+      border-radius: 18px;
+      padding: 12px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .feedback {
+      padding: 14px;
+      border-radius: 24px;
+      margin: 16px 0;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feedback.correct {
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid var(--success);
+      display: flex;
+    }
+
+    .feedback.incorrect {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid var(--danger);
+      display: flex;
+    }
+
+    .shake-effect {
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0)
+      }
+
+      25% {
+        transform: translateX(-5px)
+      }
+
+      75% {
+        transform: translateX(5px)
+      }
+    }
+
+    @media (max-width: 860px) {
+      .detective-dashboard {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-badge">مـ</div>
+        <span>MaktabaPlay</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">الرئيسية</a>
+        <a href="hangman.html">هانج مان المخطوط</a>
+        <a href="ladder-classification.html">السلم والتصنيف</a>
+        <a href="book-detective.html" class="active">محقق الكتب</a>
+        <a href="about.html">من نحن</a>
+        <a href="contact.html">تواصل</a>
+        <a href="partners.html">شركاء</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="game-main">
+    <div class="detective-dashboard">
+      <!-- القسم الأيسر: شخصية + أدلة -->
+      <div class="left-invest-panel">
+        <div class="character-card">
+          <div class="scene-container">
+            <canvas id="scene-canvas" width="400" height="240"
+              style="width:100%; height:auto; background:#0a0e18; border-radius:24px;"></canvas>
+          </div>
+          <div id="speech-bubble">🔍 مرحباً أيها المحقق! افحص تسجيلة مارك بدقة، ثم أجب عن السؤال.</div>
+        </div>
+        <div id="evidence-wrap">
+          <h3>📜 الأدلة المجمعة</h3>
+          <div id="evidence-list"></div>
+        </div>
+      </div>
+
+      <!-- القسم الأيمن: Hud + MARC + سؤال -->
+      <div class="right-invest-panel">
+        <div class="hud-modern">
+          <div class="level-badge">📖 المستوى <span id="levelNum">1</span></div>
+          <div class="progress-bar-wrap">
+            <div class="progress-fill" id="progressFillLevel"></div>
+          </div>
+          <div class="score-box">⭐ <span id="scoreSpan">0</span></div>
+          <div style="font-size:0.8rem">🎯 <span id="correctCount">0</span>/<span id="totalLevels">0</span></div>
+        </div>
+
+        <div class="marc-card">
+          <h3 style="display:flex; gap:8px; margin-bottom:16px;">📚 تسجيلة MARC21 محل الشك <span id="difficultyBadge"
+              style="font-size:0.7rem; background:#1e293b; padding:2px 12px; border-radius:30px;"></span></h3>
+          <div id="marcRecordContainer"></div>
+          <div class="marc-info" style="margin-top:12px; font-size:0.8rem; color:var(--brand-2);" id="marcHintInfo">
+          </div>
+        </div>
+
+        <div class="question-arena">
+          <div class="q-header">
+            <span>🔎 القضية رقم <span id="caseIndex">1</span></span>
+            <div class="timer-container">
+              <span>⏱️</span><span id="timerSec">20</span>ث
+              <div class="timer-fill-bar">
+                <div id="timerFillAnim" class="timer-fill" style="width:100%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="q-text" id="questionText"></div>
+          <div class="answer-input-area">
+            <input type="text" id="answerInput" placeholder="اكتب الإجابة الصحيحة هنا (مثال: 1# أو $c 2nd ed.)">
+            <button class="btn btn-primary" id="submitAnswer">إرسال التحقيق</button>
+          </div>
+          <button class="btn btn-hint" id="hintButton">💡 تلميح استخباراتي</button>
+          <div class="hint-box" id="hintBox">
+            <span>🧠 تلميح: </span><span id="hintContent"></span>
+          </div>
+          <div class="feedback" id="feedbackMsg"></div>
+          <div id="nextHolder" style="display:none;"><button class="btn btn-next" id="nextLevelBtn">➡️ القضية
+              التالية</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">© 2026 MaktabaPlay – محقق مارك 21 • اكتشف الأخطاء في التسجيلات الببليوجرافية</div>
+  </footer>
+
+  <script>
+    // ------------------------------------------------
+    // قاعدة مستويات MARC21 مع أخطاء ذكية (مأخوذة من التصميم الأول وتطوير)
+    // ------------------------------------------------
+    const levelsData = [
+      {
+        caseDesc: "الحقل 100 (مؤلف رئيسي) المؤشر الثاني خاطئ", icon: "👤", difficulty: "سهل", diffClass: "easy",
+        marcInfo: "المؤشر الأول 1 = اسم عائلة، المؤشر الثاني يجب أن يكون # (فارغ).",
+        marcFields: [
+          { tag: "LDR", ind: "##", content: "00000cam a2200000 i 4500" },
+          { tag: "008", ind: "##", content: "210514s1949    enk           000 1 eng d" },
+          { tag: "020", ind: "##", content: "$a 9780451524935" },
+          { tag: "100", ind: "10", content: "$a Orwell, George, $d 1903-1950." },
+          { tag: "245", ind: "10", content: "$a 1984 / $c George Orwell." }
+        ],
+        wrongField: "100", question: "ما هي المؤشرات الصحيحة للحقل 100؟ (استخدم # للفراغ، مثال: 1#)", correctValue: "1#", hint: "المؤشر الأول صحيح 1، الثاني يجب أن يكون # (فارغ)."
+      },
+
+      {
+        caseDesc: "الحقل 245 – بيان المسؤولية يستخدم رمزاً خاطئاً", icon: "📖", difficulty: "سهل", diffClass: "easy",
+        marcInfo: "$a العنوان الرئيسي، $c بيان المسؤولية.",
+        marcFields: [
+          { tag: "LDR", ind: "##", content: "00000cam a2200000 i 4500" },
+          { tag: "100", ind: "1#", content: "$a Austen, Jane, $d 1775-1817." },
+          { tag: "245", ind: "10", content: "$a Pride and Prejudice / $a Jane Austen." },
+          { tag: "260", ind: "#1", content: "$a London : $b T. Egerton, $c 1813." }
+        ],
+        wrongField: "245", question: "أي رمز فرعي يجب أن يسبق اسم 'Jane Austen' بدلاً من $a؟", correctValue: "$c", hint: "بيان المسؤولية في مارك يستخدم $c."
+      },
+
+      {
+        caseDesc: "الحقل 260 أخطاء في المؤشرات ورمز مكان النشر", icon: "🏢", difficulty: "متوسط", diffClass: "medium",
+        marcInfo: "المؤشرات الصحيحة #1 ، ورمز مكان النشر $a.",
+        marcFields: [
+          { tag: "100", ind: "1#", content: "$a Huxley, Aldous, $d 1894-1963." },
+          { tag: "245", ind: "10", content: "$a Brave new world / $c Aldous Huxley." },
+          { tag: "260", ind: "00", content: "$x London : $b Chatto & Windus, $c 1932." }
+        ],
+        wrongField: "260", question: "أعد كتابة الحقل 260 كاملاً بالمؤشرات والرموز الصحيحة (مثال: #1 $a London : $b Chatto & Windus, $c 1932.)", correctValue: "#1 $a London : $b Chatto & Windus, $c 1932.", hint: "المؤشرات يجب أن تكون '#1' والمكان يبدأ بـ $a."
+      },
+
+      {
+        caseDesc: "الحقل 300 ترتيب خاطئ للرموز", icon: "📏", difficulty: "متوسط", diffClass: "medium",
+        marcInfo: "$a عدد الصفحات, $c الأبعاد.",
+        marcFields: [
+          { tag: "100", ind: "1#", content: "$a Fitzgerald, F. Scott." },
+          { tag: "245", ind: "10", content: "$a The great Gatsby." },
+          { tag: "300", ind: "##", content: "$b 218 pages $a 21 cm" }
+        ],
+        wrongField: "300", question: "الترتيب الصحيح للرموز في الحقل 300 (مع المحتوى)؟", correctValue: "$a 218 pages $c 21 cm", hint: "عدد الصفحات يأتي أولاً بـ $a، ثم الأبعاد بـ $c."
+      },
+
+      {
+        caseDesc: "تضارب سنة النشر بين 008 و260", icon: "📅", difficulty: "صعب", diffClass: "hard",
+        marcInfo: "الحقل 008 مواضع 07-10 هي سنة النشر.",
+        marcFields: [
+          { tag: "008", ind: "##", content: "370612s1999    enk           000 1 eng d" },
+          { tag: "100", ind: "1#", content: "$a Tolkien, J. R. R." },
+          { tag: "260", ind: "#1", content: "$a London : $b Allen & Unwin, $c 1937." }
+        ],
+        wrongField: "008", question: "ما هي السنة الصحيحة التي يجب أن تكون في 008 بدلاً من 1999؟", correctValue: "1937", hint: "انظر إلى حقل 260 $c."
+      },
+
+      {
+        caseDesc: "بيان الطبعة مكتوب بصيغة غير قياسية", icon: "📝", difficulty: "سهل", diffClass: "easy",
+        marcInfo: "الحقل 250 يستخدم الاختصارات المعيارية.",
+        marcFields: [
+          { tag: "100", ind: "1#", content: "$a Hemingway, Ernest." },
+          { tag: "250", ind: "##", content: "$a Two edition." }
+        ],
+        wrongField: "250", question: "صحح محتوى الحقل 250 إلى الصيغة الإنجليزية الصحيحة (مثال: 2nd ed.)", correctValue: "$a 2nd ed.", hint: "استخدم 2nd ed. بدلاً من 'Two edition'."
+      },
+
+      {
+        caseDesc: "نوع أدبي في الحقل الخاطئ (650 بدلاً من 655)", icon: "🏷️", difficulty: "متوسط", diffClass: "medium",
+        marcInfo: "الحقل 650 للموضوعات، 655 للأنواع الأدبية.",
+        marcFields: [
+          { tag: "100", ind: "1#", content: "$a Christie, Agatha." },
+          { tag: "650", ind: "#0", content: "$a Detective and mystery stories." }
+        ],
+        wrongField: "650", question: "ما هو التاج الصحيح (رقم الحقل) لمصطلح نوع أدبي؟", correctValue: "655", hint: "الأنواع الأدبية توضع في الحقل 655."
+      }
+    ];
+
+    let currentIndex = 0;
+    let totalScore = 0;
+    let correctAnswersCount = 0;
+    let timerInterval = null;
+    let timeLeft = 22;
+    let answered = false;
+    let evidences = [];
+
+    // عناصر DOM
+    const levelNumSpan = document.getElementById('levelNum');
+    const progressFill = document.getElementById('progressFillLevel');
+    const scoreSpan = document.getElementById('scoreSpan');
+    const correctCountSpan = document.getElementById('correctCount');
+    const totalLevelsSpan = document.getElementById('totalLevels');
+    const marcContainer = document.getElementById('marcRecordContainer');
+    const questionTextEl = document.getElementById('questionText');
+    const answerInput = document.getElementById('answerInput');
+    const submitBtn = document.getElementById('submitAnswer');
+    const hintBtn = document.getElementById('hintButton');
+    const hintBox = document.getElementById('hintBox');
+    const hintContentSpan = document.getElementById('hintContent');
+    const feedbackDiv = document.getElementById('feedbackMsg');
+    const nextHolder = document.getElementById('nextHolder');
+    const nextBtn = document.getElementById('nextLevelBtn');
+    const difficultyBadgeSpan = document.getElementById('difficultyBadge');
+    const marcHintInfoSpan = document.getElementById('marcHintInfo');
+    const timerSecSpan = document.getElementById('timerSec');
+    const timerFillAnim = document.getElementById('timerFillAnim');
+    const caseIndexSpan = document.getElementById('caseIndex');
+    const evidenceListDiv = document.getElementById('evidence-list');
+
+    totalLevelsSpan.innerText = levelsData.length;
+
+    // ---- شخصية المحقق المتحركة (من التصميم الثاني) ----
+    const canvas = document.getElementById('scene-canvas');
+    const ctx = canvas.getContext('2d');
+    let animFrame;
+    let charState = { x: 180, legAnim: 0, armAnim: 0, blink: false, blinkTimer: 0, emotion: 'neutral', time: 0, onFire: false };
+    let moveDir = 1, moving = false, idleCounter = 0;
+
+    function drawCharacter(ctx, x, y, st) {
+      const legSwing = Math.sin(st.legAnim) * 0.25;
+      const armSwing = Math.sin(st.armAnim) * 0.2;
+      ctx.save();
+      ctx.translate(x, y);
+      // legs
+      ctx.fillStyle = "#2e1d44";
+      ctx.save(); ctx.translate(-6, 18); ctx.rotate(legSwing); ctx.fillRect(-4, 0, 8, 16); ctx.fillStyle = "#1a1025"; ctx.beginPath(); ctx.ellipse(0, 16, 6, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.translate(6, 18); ctx.rotate(-legSwing); ctx.fillRect(-4, 0, 8, 16); ctx.fillStyle = "#1a1025"; ctx.beginPath(); ctx.ellipse(0, 16, 6, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      // body
+      ctx.fillStyle = "#4a2d7a"; ctx.beginPath(); ctx.roundRect(-14, -4, 28, 26, 6); ctx.fill();
+      ctx.fillStyle = "#f0e8d0"; ctx.beginPath(); ctx.roundRect(-5, 2, 10, 14, 3); ctx.fill();
+      ctx.fillStyle = "#c89b3c"; ctx.beginPath(); ctx.moveTo(-2, 3); ctx.lineTo(2, 3); ctx.lineTo(1, 13); ctx.lineTo(0, 15); ctx.lineTo(-1, 13); ctx.fill();
+      // arms
+      ctx.save(); ctx.translate(-14, 2); ctx.rotate(-armSwing); ctx.fillRect(-6, 0, 7, 16); ctx.restore();
+      ctx.save(); ctx.translate(14, 2); ctx.rotate(armSwing); ctx.fillRect(-1, 0, 7, 16); // magnifier
+      ctx.beginPath(); ctx.arc(20, 12, 6, 0, Math.PI * 2); ctx.strokeStyle = "#c89b3c"; ctx.lineWidth = 2; ctx.stroke(); ctx.beginPath(); ctx.moveTo(24, 17); ctx.lineTo(29, 22); ctx.stroke();
+      ctx.restore();
+      // head
+      ctx.fillStyle = "#f5c88a"; ctx.beginPath(); ctx.ellipse(0, -12, 13, 15, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#2e1d44"; ctx.fillRect(-11, -27, 22, 4); ctx.fillRect(-8, -33, 16, 8);
+      ctx.fillStyle = "white"; ctx.beginPath(); ctx.ellipse(-5, -15, 3, 4, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.ellipse(5, -15, 3, 4, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#2e1d44"; ctx.beginPath(); ctx.arc(-5, -14, 1.5, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(5, -14, 1.5, 0, Math.PI * 2); ctx.fill();
+      if (st.emotion === 'happy') { ctx.beginPath(); ctx.arc(0, -6, 4, 0.1, Math.PI - 0.1); ctx.stroke(); }
+      else if (st.emotion === 'sad') { ctx.beginPath(); ctx.arc(0, -5, 4, Math.PI + 0.1, Math.PI * 2 - 0.1); ctx.stroke(); }
+      else { ctx.beginPath(); ctx.arc(0, -6, 4, 0, Math.PI); ctx.stroke(); }
+      if (st.onFire) {
+        ctx.fillStyle = "#ff8800"; ctx.font = "bold 12px sans-serif"; ctx.fillText("🔥", 12, -32);
+      }
+      ctx.restore();
+    }
+    function animateScene() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // background
+      ctx.fillStyle = "#0e1626"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#1a2335"; ctx.fillRect(0, canvas.height - 60, canvas.width, 60);
+      for (let i = 0; i < 8; i++) { ctx.fillStyle = "#2e1d44"; ctx.fillRect(30 + i * 45, 70, 12, 40); }
+      if (moving) {
+        charState.x += moveDir * 1.2;
+        charState.legAnim += 0.2;
+        charState.armAnim += 0.2;
+        if (charState.x > canvas.width - 80 || charState.x < 60) { moving = false; moveDir *= -1; }
+      } else { idleCounter++; if (idleCounter > 70) { idleCounter = 0; moving = true; moveDir = charState.x < 180 ? 1 : -1; } charState.legAnim *= 0.95; charState.armAnim += 0.03; }
+      charState.time++;
+      if (charState.blinkTimer++ > 70) { charState.blink = true; if (charState.blinkTimer > 75) { charState.blink = false; charState.blinkTimer = 0; } }
+      drawCharacter(ctx, charState.x, canvas.height - 70, charState);
+      requestAnimationFrame(animateScene);
+    }
+    animateScene();
+
+    function setSpeech(text) { document.getElementById('speech-bubble').innerHTML = `💬 ${text}`; }
+    function addEvidence(evidenceText) {
+      const tag = document.createElement('span'); tag.className = 'evidence-tag'; tag.innerText = `📌 ${evidenceText}`;
+      evidenceListDiv.appendChild(tag);
+    }
+    // عرض تسجيلة مارك
+    function renderMarcRecord(level) {
+      marcContainer.innerHTML = '';
+      level.marcFields.forEach(field => {
+        const div = document.createElement('div'); div.className = 'marc-field';
+        if (field.tag === level.wrongField) div.classList.add('has-error');
+        div.innerHTML = `<div class="marc-tag">${field.tag}</div><div class="marc-ind">${field.ind}</div><div class="marc-data">${field.content.replace(/(\$[a-z0-9])/g, '<span style="color:#22c55e;">$1</span>')}</div>`;
+        if (field.tag === level.wrongField) div.innerHTML += `<span class="error-badge">⚠️ خطأ</span>`;
+        marcContainer.appendChild(div);
+      });
+      marcHintInfoSpan.innerText = `📘 قاعدة: ${level.marcInfo}`;
+      difficultyBadgeSpan.innerText = level.difficulty;
+    }
+
+    function stopTimer() { if (timerInterval) clearInterval(timerInterval); }
+    function startTimer(seconds) {
+      timeLeft = seconds;
+      timerSecSpan.innerText = timeLeft;
+      timerFillAnim.style.width = '100%';
+      timerInterval = setInterval(() => {
+        if (!answered) {
+          timeLeft--;
+          timerSecSpan.innerText = timeLeft;
+          let percent = (timeLeft / seconds) * 100;
+          timerFillAnim.style.width = `${Math.max(0, percent)}%`;
+          if (percent < 30) timerFillAnim.style.background = '#ef4444';
+          else if (percent < 60) timerFillAnim.style.background = '#f59e0b';
+          else timerFillAnim.style.background = '#22c55e';
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            if (!answered) handleTimeout();
+          }
+        }
+      }, 1000);
+    }
+
+    function handleTimeout() {
+      answered = true;
+      charState.emotion = 'sad';
+      setSpeech('انتهى الوقت! دعنا ننتقل للقضية التالية.');
+      feedbackDiv.className = 'feedback incorrect';
+      feedbackDiv.innerHTML = `<span>⏰</span> انتهى الوقت! الإجابة الصحيحة: ${levelsData[currentIndex].correctValue}`;
+      nextHolder.style.display = 'block';
+      answerInput.disabled = true; submitBtn.disabled = true;
+    }
+
+    function loadLevel(index) {
+      if (index >= levelsData.length) { endGame(); return; }
+      answered = false;
+      stopTimer();
+      const lvl = levelsData[index];
+      renderMarcRecord(lvl);
+      questionTextEl.innerText = lvl.question;
+      hintContentSpan.innerText = lvl.hint;
+      answerInput.disabled = false; submitBtn.disabled = false;
+      answerInput.value = '';
+      feedbackDiv.className = 'feedback'; feedbackDiv.style.display = 'none';
+      nextHolder.style.display = 'none';
+      hintBox.classList.remove('show'); hintBox.style.display = 'none';
+      charState.emotion = 'thinking';
+      setSpeech(`القضية ${index + 1}: ${lvl.caseDesc}`);
+      caseIndexSpan.innerText = index + 1;
+      levelNumSpan.innerText = index + 1;
+      let prog = ((index) / levelsData.length) * 100;
+      progressFill.style.width = `${prog}%`;
+      startTimer(22);
+    }
+
+    function checkAnswer() {
+      if (answered) return;
+      const userAns = answerInput.value.trim();
+      if (!userAns) return;
+      const lvl = levelsData[currentIndex];
+      let isCorrect = (userAns.toLowerCase().replace(/\s+/g, '').replace(/#/g, ' ') === lvl.correctValue.toLowerCase().replace(/\s+/g, '').replace(/#/g, ' '));
+      if (!isCorrect && lvl.correctValue.includes(userAns) && userAns.length > 3) isCorrect = true;
+      answered = true;
+      stopTimer();
+      if (isCorrect) {
+        let points = (lvl.diffClass === 'easy' ? 100 : lvl.diffClass === 'medium' ? 200 : 300);
+        totalScore += points;
+        correctAnswersCount++;
+        scoreSpan.innerText = totalScore;
+        correctCountSpan.innerText = correctAnswersCount;
+        feedbackDiv.className = 'feedback correct';
+        feedbackDiv.innerHTML = `<span>✅</span> إجابة صائبة! +${points} نقطة.`;
+        charState.emotion = 'happy';
+        setSpeech('ممتاز! دليل جديد في حقيبتنا.');
+        addEvidence(`✨ ${lvl.caseDesc.substring(0, 40)}`);
+        if (lvl.diffClass === 'hard') charState.onFire = true;
+        else charState.onFire = (correctAnswersCount % 2 === 0);
+      } else {
+        feedbackDiv.className = 'feedback incorrect';
+        feedbackDiv.innerHTML = `<span>❌</span> إجابة خاطئة. الصواب: ${lvl.correctValue}`;
+        charState.emotion = 'sad';
+        setSpeech('للأسف، تحقق من الإجابة الصحيحة وتابع.');
+        charState.onFire = false;
+        document.querySelector('.right-invest-panel').classList.add('shake-effect');
+        setTimeout(() => document.querySelector('.right-invest-panel').classList.remove('shake-effect'), 400);
+      }
+      answerInput.disabled = true; submitBtn.disabled = true;
+      nextHolder.style.display = 'block';
+    }
+
+    function nextLevel() {
+      currentIndex++;
+      loadLevel(currentIndex);
+    }
+
+    function endGame() {
+      stopTimer();
+      alert(`🎉 انتهت التحقيقات! النقاط: ${totalScore} | إجابات صحيحة: ${correctAnswersCount} من ${levelsData.length}`);
+      location.reload();
+    }
+
+    submitBtn.addEventListener('click', checkAnswer);
+    nextBtn.addEventListener('click', nextLevel);
+    hintBtn.addEventListener('click', () => {
+      if (hintBox.style.display === 'none') { hintBox.style.display = 'block'; setSpeech('استخدم التلميح بحذر!'); }
+      else hintBox.style.display = 'none';
+    });
+    loadLevel(0);
+  </script>
+</body>
+
+</html>
